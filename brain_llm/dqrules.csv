@@ -1,0 +1,605 @@
+Conversion Object Name,SAP Modules,Data Type,Rule #,Profiling Rule Descriptions,Quality Dimension,Attribute Group
+Customer Master,SCM - Supply-Chain-Management,Master,1,Find Active Customers: Check if any transaction occurred over the last 3 Years,Relevancy,Active Count
+Customer Master,SCM - Supply-Chain-Management,Master,2,Retrieve all customers which have deletion flag set,Relevancy,Inactive Count
+Customer Master,SCM - Supply-Chain-Management,Master,3,Retrieve customers based on the account group ,Relevancy,Account Group
+Customer Master,SCM - Supply-Chain-Management,Master,4,"Check if the Pin Code is in right format as per the US and CA naming standards. For US, Code should be in USA: 99999 format, and for CA, Code should be in CAN: XXX XXX format",Consistency,Address
+Customer Master,SCM - Supply-Chain-Management,Master,5,Retrieve customers where city contains comma character,Conformity,Address
+Customer Master,SCM - Supply-Chain-Management,Master,6,Retrieve all customers where street has PO BOX or PO Box information is not blank,Completeness,Address
+Customer Master,SCM - Supply-Chain-Management,Master,7,Percentage of Customers with blank Postal Code(Zip code) ,Completeness,Address
+Customer Master,SCM - Supply-Chain-Management,Master,8,"Postal Code (Zip) code for US Customers (Sold-to, Ship-to, Bill-to, Payer, Inter-Company(Plant) Customers, One-Time Customer) should be either 5 digit or 10 digit with format as XXXXX or  XXXXX-XXXX",Conformity,Address
+Customer Master,SCM - Supply-Chain-Management,Master,9,Retrieve all customers where street is not blank and street having only numeric values,Conformity,Address
+Customer Master,SCM - Supply-Chain-Management,Master,10,Retrieve all customers where street is not blank and street having only alphabets only,Conformity,Address
+Customer Master,SCM - Supply-Chain-Management,Master,11,"Percentage of Customers (Sold-to, Ship-to, Bill-to, Payer, Inter-Company(Plant) Customers, One-Time Customer) with blank ""City"" field",Completeness,Address
+Customer Master,SCM - Supply-Chain-Management,Master,12,Retrieve all customers were street contains special characters,Conformity,Address
+Customer Master,SCM - Supply-Chain-Management,Master,13,Country should not be null or blank,Completeness,Address
+Customer Master,SCM - Supply-Chain-Management,Master,14,"For Canada, currency is always 'CAD'. For USA, currency is always ""USD""",Conformity,Currency
+Customer Master,SCM - Supply-Chain-Management,Master,15,1.Check for NULL Cust Number 2. Check if the spaces are present in the beginning or at the end of Customer Number ,Completeness,Customer Number
+Customer Master,SCM - Supply-Chain-Management,Master,16,Check if Duplicate Customer Numbers are present,Uniqueness,Duplicate Check
+Customer Master,SCM - Supply-Chain-Management,Master,17,"Check if the DOB is present, and if present then DOB greater than Year 2000 and less than Year 1901. Date Format taken as YYYY.MM.DD",Conformity,DOB
+Customer Master,SCM - Supply-Chain-Management,Master,18,"Check for duplicate Customers by comparing combination of values for  fields - Account group, name, address, tax id(KTOKD,NAME1,ADRNR,STCD1)",Uniqueness,Duplicate Check
+Customer Master,SCM - Supply-Chain-Management,Master,19,"Check if the Customer Names are in Valid Format (Other than alphabets, "","" (Comma) and ""."" (Dot) are marked Invalid). Also check there is no space in beginning and end of name values",Conformity,Customer Name
+Customer Master,SCM - Supply-Chain-Management,Master,20,Check if duplicate Customer Names are present,Uniqueness,Duplicate Check
+Customer Master,SCM - Supply-Chain-Management,Master,21,Number of Customers with email id not in a valid format (should contain @ and no spaces should exist in the string that contains @),Conformity,Email
+Customer Master,SCM - Supply-Chain-Management,Master,22,Number of Customers with no email id maintained,Completeness,Email
+Customer Master,SCM - Supply-Chain-Management,Master,23,Retrieve all customers where fax number is missing,Completeness,Fax
+Customer Master,SCM - Supply-Chain-Management,Master,24,"Name 1 must not contain any of these special characters: (~); (*) ; (:) ; (^) ; (\) ; (/) ;  (>) ; (<) ; (|) ; (,) ; (;) ; ( "" ) ; ( ' ) ; ( @ ) ; ( ? ), ( + ), ( # ) for all Customer account groups",Conformity,Name
+Customer Master,SCM - Supply-Chain-Management,Master,25,"Identify Customer with invalid Name1 values: Invalid words included in the Name Field as status indicator (i.e. Blocked, Delete, Do not use, closed, test)",Conformity,Name
+Customer Master,SCM - Supply-Chain-Management,Master,26,"Identify Customer Names that exceed the maximum allowable field size. In SAP , customer name field length in BUT000 table is 35 char long, hence if the values from dealer trade names need to be populated in S4, proper trim values will be required from Business",Conformity,Name
+Customer Master,SCM - Supply-Chain-Management,Master,27,"Check Missing Payment Method for Customers (Sold-to, Ship-to, Bill-to, Payer, Inter-Company(Plant) Customers, One-Time Customer, Intercompany) having company code extensions",Completeness,Payment Method
+Customer Master,SCM - Supply-Chain-Management,Master,28,"Percentage of Customers (Sold-to, Ship-to, Bill-to, Payer, Inter-Company(Plant) Customers, One-Time Customer, Intercompany) having company code extensions and blank payment terms",Completeness,Payment Term
+Customer Master,SCM - Supply-Chain-Management,Master,29,Find customers where payment term is blank,Completeness,Payment Term
+Customer Master,SCM - Supply-Chain-Management,Master,30,Find customers where Recon account is blank,Completeness,Recon Account
+Customer Master,SCM - Supply-Chain-Management,Master,31,"Check if the Tax Number is available in right format as per the US naming standards. SSN format should align with 999-99-9999, and TIN format should align with XX-99-9999 format",Conformity,Tax
+Customer Master,SCM - Supply-Chain-Management,Master,32,Percentage of Customers in United States and Canada with no Tax Jurisdiction Code,Completeness,Tax
+Customer Master,SCM - Supply-Chain-Management,Master,33,"Check if the Telephone is missing, and if present then no alphabets should be present and length be 10 digit only ( as per US and Canada standards)",Conformity,Telephone
+Customer Master,SCM - Supply-Chain-Management,Master,34,Percentage of US Customers with Telephone Numbers not in the format (XXX)-XXX-XXXX ,Conformity,Telephone
+Customer Master,SCM - Supply-Chain-Management,Master,35,Percentage of Customers with blank Telephone Numbers ,Completeness,Telephone
+Customer Master,SCM - Supply-Chain-Management,Master,36,Retrieve all customers where  telephone1 is not blank and get the unique count,Relevancy,Telephone
+Customer Master,SCM - Supply-Chain-Management,Master,37,Check if the Sales Org is present/absent,Completeness,Sales Area
+Customer Master,SCM - Supply-Chain-Management,Master,38,How many Customers in ECC also play the role of Vendors (and vice versa),Relevancy,Role
+Vendor Master,MM - Material Management,Master,1,Find Active Vendors: Check if any transaction occurred over the last 3 Years,Relevancy,Active Count
+Vendor Master,MM - Material Management,Master,2,Retrieve all vendors which have deletion flag set (marked as Blocked),Relevancy,Inactive Count
+Vendor Master,MM - Material Management,Master,3,"Check if there are duplicate vendors by checking combination of values for certain fields:
+1) Account group, name, address
+2) Account group, tax identification",Uniqueness,Duplicate Check
+Vendor Master,MM - Material Management,Master,4,"Duplicate Vendor: Check if duplicate Vendor Names are present based on the combination of Vendor Name, Account Group, and Tax Number",Uniqueness,Duplicate Check
+Vendor Master,MM - Material Management,Master,5,Each and every vendor should have a name,Completeness,Name
+Vendor Master,MM - Material Management,Master,6,"No invalid words  in name field - ""Archive"", ""Delete"", ""Do Not Use"", ""Cancel"", ""Block"", ""Blocked"" [include all variations]",Conformity,Name
+Vendor Master,MM - Material Management,Master,7,"Check if the Vendor Names are in Valid Format (Other than alphabets and """"."""" (Dot) are marked Invalid)",Conformity,Name
+Vendor Master,MM - Material Management,Master,8,"Check Address Line 1 & Address Line 2  for Active Vendors exist (Direct, Indirect, Ordering Address, Invoicing Party, Inter-Company(Plants), Customers, One-Time Vendor, Manufacturer Rep, Tax and Payroll Tax, Freight Forwarder)",Completeness,Address
+Vendor Master,MM - Material Management,Master,9,"Identify invalid region
+[IS (blank OR Null) AND NOT(in base table T005S)] ",Integrity,Address
+Vendor Master,MM - Material Management,Master,10,Check if the Street Address is Present for the required Account Groups,Completeness,Address
+Vendor Master,MM - Material Management,Master,11,"Check Missing Postal Code for Vendors (Direct, Indirect, Ordering Address, Invoicing Party, Inter-Company(Plants), Customers, One-Time Vendor, Manufacturer Rep, Tax and Payroll Tax, Freight Forwarder).",Completeness,Address
+Vendor Master,MM - Material Management,Master,12,"Check if the Pin Code is in right format as per the US and CA naming standards. For US, Code should be in USA: 99999 format, and for CA, Code should be in CAN: XXX XXX format",Conformity,Address
+Vendor Master,MM - Material Management,Master,13,"Bank details should be maintained for Direct/Indirect vendors, employee vendors. If invoicing party vendors are assigned as partners to main vendors, these should have bank information available",Integrity,Bank
+Vendor Master,MM - Material Management,Master,14,"Check for Missing Company code for Vendors(Direct and Indirect, Employee). If there are Invoicing Party vendors assigned to the vendors, they should also have company code extensions",Integrity,Company Code
+Vendor Master,MM - Material Management,Master,15,"Check email for vendors exist (Direct, Indirect, Ordering Address, Inter-Company(Plants), Freight Forwarder).",Completeness,Email
+Vendor Master,MM - Material Management,Master,16,Number of Vendors with email id not in a valid format (should contain @ and no spaces should exist in the string that contains @),Conformity,Email
+Vendor Master,MM - Material Management,Master,17,Check if the invoicing party vendors are assigned to main vendors,Integrity,Partner Function
+Vendor Master,MM - Material Management,Master,18,Check if the ordering address vendors are assigned to main vendors,Integrity,Partner Function
+Vendor Master,MM - Material Management,Master,19,"Check Missing Payment Method for Vendors (Direct, Indirect, Invoicing Party, Employee, Intercompany) having company code extensions",Completeness,Payment Term
+Vendor Master,MM - Material Management,Master,20,"Check Missing Payment Term for Vendors (Direct, Indirect, Ordering Address, Invoicing Party, Inter-Company(Plants), Customers, Manufacturer Rep, Tax and Payroll Tax, Freight Forwarder) having company code extensions",Completeness,Payment Term
+Vendor Master,MM - Material Management,Master,21,"Number of records with payment block indicator
+Identify payment block flag to categorize inactive records
+If Payment Block Indicator='X'",Relevancy,Payment Term
+Vendor Master,MM - Material Management,Master,22,"Validate whether the Purchase Org info is defined or Purchase Org extensions exist for Direct and Indirect vendors, Goods Suppliers",Validity,Purchase Org
+Vendor Master,MM - Material Management,Master,23,Check missing Purchase Order Currency for vendors having Purchasing Org extensions,Completeness,Purchase Org
+Vendor Master,MM - Material Management,Master,24,"Check for Blank Inco Terms (Direct Vendors, Indirect Vendors, Intercompany, Good Supplier) having Purchasing Org extensions",Completeness,Purchase Org
+Vendor Master,MM - Material Management,Master,25,"Check Reconciliation account belongs to the account group for vendors (Direct/Indirect, Invoicing Party, Employee, Intercompany)",Integrity,Recon Account
+Vendor Master,MM - Material Management,Master,26,"Check blank Tax number for Vendors (Direct, Indirect, Invoicing Party, Inter-Company(Plants), Customers, One-Time Vendor, Manufacturer Rep, Tax and Payroll Tax, Freight Forwarder) in United States.",Completeness,Tax
+Vendor Master,MM - Material Management,Master,27,"Check if the Tax Number is available in right format as per the US naming standards. SSN format should align with 999-99-9999, and TIN format should align with XX-99-9999 format",Conformity,Tax
+Vendor Master,MM - Material Management,Master,28,"Check blank VAT number for Vendors (Direct, Indirect, Invoicing Party, Inter-Company(Plants), Customers, Manufacturer Rep, Tax and Payroll Tax, Freight Forwarder) in EU Countries.",Completeness,Tax
+Vendor Master,MM - Material Management,Master,29,Vendors in United States and Canada with no Tax Jurisdiction Code,Completeness,Tax
+Vendor Master,MM - Material Management,Master,30,"Check  Telephone Numbers for Vendors exist (Direct, Indirect,  Ordering Address, Invoicing Party, Customers, Manufacturer Rep, Tax and Payroll Tax, Freight Forwarder).",Completeness,Telephone
+Vendor Master,MM - Material Management,Master,31,"Check if the Telephone is missing, and if present then no alphabets should be present and length be 10 digit only ( as per US and Canada standards)",Conformity,Telephone
+Vendor Master,MM - Material Management,Master,32,Identify employee vendors (record count),Relevancy,Employee
+Vendor Master,MM - Material Management,Master,33,"Identify invalid Industry key
+IF Industry Key IS (blank OR null) OR (NOT in base table T016) ",Integrity,Industry Key
+Material Master,MM - Material Management,Master,1,"Identify active materials - Materials which have a Sales Order, Purchase Order or a Production Order in specified time frame",Relevancy,Active Count
+Material Master,MM - Material Management,Master,2,Length of Material number should not be greater than 40 characters,Conformity,Material Number
+Material Master,MM - Material Management,Master,3,"Each material should have a description
+Material Description should not be greater than 40 characters",Conformity,Material Description
+Material Master,MM - Material Management,Master,4,Number of materials with exact same description,Uniqueness,Duplicate Check
+Material Master,MM - Material Management,Master,5,"Identify duplicate materials based on combination of material type, description, material group, base UOM",Uniqueness,Duplicate Check
+Material Master,MM - Material Management,Master,6,All characters must be Upper Case for field MAKTX Material Description (Short Text) ,Conformity,Material Description
+Material Master,MM - Material Management,Master,7,"No special characters (examples: \ | $ # + * "" % () / ^) in Material Description (Short Text) 
+[Recommendation: avoid special char as much as possible to avoid data loading issues in S/4 during migration]",Conformity,Material Description
+Material Master,MM - Material Management,Master,8,Each material should have a Base Unit of Measure,Completeness,UoM
+Material Master,MM - Material Management,Master,9,Any Materials missing the Alternate Unit of Measure,Completeness,UoM
+Material Master,MM - Material Management,Master,10,"Check materials with blank material groups
+Material group should not be greater than 9 characters",Conformity,Material Group
+Material Master,MM - Material Management,Master,11,Check Material with blank item category group,Completeness,Category Group
+Material Master,MM - Material Management,Master,12,Check Material with blank Product Hierarchy,Completeness,Product Hierarchy
+Material Master,MM - Material Management,Master,13,Check Materials with no size and dimensions maintained,Completeness,Dimensions
+Material Master,MM - Material Management,Master,14,"Raw material should have following data available
+Purchasing Data - Plant where the material is procured, GR processing time 
+Accounting Data - Price control (standard or moving average),price, price unit",Completeness,Raw Material
+Material Master,MM - Material Management,Master,15,"Finished  material should have following data available
+Sales Data - Sales organization from which material is sold,  
+Accounting Data - Valuation area, Price control (standard or moving average),price, price unit",Completeness,Finished  Material
+Material Master,MM - Material Management,Master,16,"Semi Finished  material should have following data available
+Sales Data - Sales organization from which material is sold,  
+Accounting Data - Valuation area, Price control (standard or moving average),price, price unit",Completeness,Semi Finished
+Material Master,MM - Material Management,Master,17,"For materials which are costed, costing data should be available - costing lot, price",Completeness,Costing Data
+Material Master,MM - Material Management,Master,18,"If a material is planned using MRP, MRP type, lot size, MRP controller, Scheduling margin key, availability check data should be available",Completeness,MRP Data
+Material Master,MM - Material Management,Master,19,No blanks or nulls in field SPRAS for language key,Completeness,Language Key
+Material Master,MM - Material Management,Master,20,No blanks or null in field MBRSH for industry sector,Completeness,Industry Sector
+Material Master,MM - Material Management,Master,21,No blanks or nulls in field MTART for Material Type,Completeness,Material Type
+Material Master,MM - Material Management,Master,22,"Materials that have blank EAN Numbers. Typically for materials that are sellable, EAN is required. Without EAN the unique barcodes cannot be generated.",Completeness,EAN
+Material Master,MM - Material Management,Master,23,"Check Materials with no EAN or UPC maintained. If EAN or UPC has been maintained, the length should not be greater than 18 characters",Completeness,EAN_UPC
+Material Master,MM - Material Management,Master,24,"Length of field ""REM_SHELF_LIFE"" Less than or equal to  4
+The remaining shelf life field has a limit of 4 characters. If a material has Remaining Shelf life greater than 4, the material cannot be created in S4",Conformity,REM_SHELF_LIFE
+Material Master,MM - Material Management,Master,25,Transport Group is missing. Transportation group is a key field for sellable materials.,Completeness,Transportation Group
+Cost Center,Finance,Master,1,List of all Cost centers whose Validity Period is in the past.,Relevancy,Active Count
+Cost Center,Finance,Master,2,"Cost centers that are not valid, but not yet blocked. ",Relevancy,Active Count
+Cost Center,Finance,Master,3,"List of all cost centers that are blocked by: Actual Primary Costs, Actual Secondary Costs, Actual Revenues, Plan Primary Costs, Plan Secondary Costs, Plan Revenues",Relevancy,Active Count
+Cost Center,Finance,Master,4,List of Cost centers that are assigned to an inactive or invalid Profit Center,Relevancy,Active Count
+Cost Center,Finance,Master,5,"Cost Centers with blank ""Department"" values",Validity,Department
+Cost Center,Finance,Master,6,"Cost Centers with blank ""Hierarchy Area"" values",Validity,Hierarchy Area
+Cost Center,Finance,Master,7,"Cost Centers with blank ""Profit Center"" values",Validity,Profit Center
+Cost Center,Finance,Master,8,"Cost Centers with blank ""Functional Area"" values",Validity,Functional Area
+Cost Center,Finance,Master,9,"Cost Centers with blank ""Business Area"" values",Validity,Business Area
+Cost Center,Finance,Master,10,Cost Centers with blank or invalid Currency values,Validity,Currency
+Cost Center,Finance,Master,11,Cost Centers with blank or invalid Company Code,Validity,Company Code
+Cost Center,Finance,Master,12,List of all Cost centers that do not have an owner (User Responsible) assigned to it. Or having inactive owners.,Validity,Owners
+Profit Center,Finance,Master,1,List of all Inactive Profit Centers,Relevancy,Active Count
+Profit Center,Finance,Master,2,"Profit centers that are not valid, but not yet blocked.",Relevancy,Active Count
+Profit Center,Finance,Master,3,List of all blocked profit centers,Relevancy,Active Count
+Profit Center,Finance,Master,4,List of all profit centers by company code - To check on which profit centers are company code specific.,Relevancy,Active Count
+Profit Center,Finance,Master,5,List of all profit centers that do not have an owner (User Responsible) assigned to it. Or having inactive owners.,Validity,Owners
+Profit Center,Finance,Master,6,Maximum length for the name of profit center should be 20 Char,Conformity,Profit Center Name
+Profit Center,Finance,Master,7,Maximum length for the long text of profit center should be 40 Char,Conformity,Long Text
+Profit Center,Finance,Master,8,"All The profit centers in table CEPC with field ABTEI (""Description"") as blank",Completeness,Description
+Profit Center,Finance,Master,9,"Profit Centers with blank ""Profit Center Group"" values",Completeness,Profit Center Group
+Profit Center,Finance,Master,10,"Profit Centers with blank ""Segment"" values",Completeness,Segment
+Profit Center,Finance,Master,11,"Profit Centers that are marked as ""Dummy"" Profit centers - Profit Center having text Dummy in Name/Short Text/Long Text/Profit center code",Validity,Description
+GL Account,Finance,Master,1,List all the GLs that are blocked for posting. Check if the GL is blocked. Table: SKB1. Field: XSPEB. This field is marked as 'X' if the GL is blocked.,Relevancy,Active Count
+GL Account,Finance,Master,2,"Short Text length should be available and not exceed 50 characters
+2. Should not contain special characters.",Conformity,Short Text
+GL Account,Finance,Master,3,"Long Text length should not exceed 50 characters if available.
+2. Should not contain special characters.",Conformity,Long Text
+GL Account,Finance,Master,4,GL Field status group should not be blank and Legacy to SAP GL field Status group should be available if applicable.,Completeness,Field Status Group
+GL Account,Finance,Master,5,"GL Foreign Currency assigned should be same as Company code currency.
+",Integrity,Currency
+GL Account,Finance,Master,6,GL Group Accounts should not be blank and GL Group Accounts values should exist in GL Account field,Completeness,Group Account
+GL Account,Finance,Master,7,List of all accounts having a Trading partner assigned to it,Completeness,Trading Partner
+Asset Master,Finance,Master,1,"Identify active assets (Tables ANLA and field DEAKT, if this field has date, then from that date Asset is Deactivated and Depreciation is not calculated from his date)",Relevancy,Active Count
+Asset Master,Finance,Master,2,Identify assets which has exactly same asset description values,Uniqueness,Duplicate Check
+Asset Master,Finance,Master,3,No blanks or nulls in Asset Class,Completeness,Asset Class
+Asset Master,Finance,Master,4,All characters must be Upper Case and Alphanumeric for Asset Class,Conformity,Asset Class
+Asset Master,Finance,Master,5,Asset description length should be available and not exceed 50 characters. Should not contain special characters.,Conformity,Description
+Asset Master,Finance,Master,6,No leading or trailing spaces in Asset description (TXT50),Conformity,Description
+Asset Master,Finance,Master,7,All characters must be Upper Case and Alphanumeric for Asset Description,Conformity,Description
+Asset Master,Finance,Master,8,Additional Asset description length should not exceed 50 characters if available.. Should be all in uppercase and not contain special characters.,Conformity,Description
+Asset Master,Finance,Master,9,No blanks or null in Main Asset Number,Completeness,Asset Number
+Asset Master,Finance,Master,10,"No special characters (examples: \ | $ # + * "") in Main Asset Number. Field ANLN1 Main Asset Number cannot exceed character limit: 12",Conformity,Asset Number
+Asset Master,Finance,Master,11,No blanks or nulls in Asset Category Code,Completeness,Asset Category
+Asset Master,Finance,Master,12,No nulls or blanks in Serial Number,Completeness,Serial Number
+Asset Master,Finance,Master,13,No blanks or nulls in Date of Purchase,Completeness,Purchase Date
+Asset Master,Finance,Master,14,Field AIBDT Date of Purchase cannot exceed character limit: 8 in the format YYYY.MM.DD,Conformity,Purchase Date
+Asset Master,Finance,Master,15,Date of purchase should be the before Capitalization date,Validity,Purchase Date
+Asset Master,Finance,Master,16,All characters must be Upper Case and Alphanumeric for Company Code,Conformity,Company Code
+Asset Master,Finance,Master,17,Capitalization Date should not be blank,Completeness,Capitalization Date
+Asset Master,Finance,Master,18,Field AKTIV Capitalization Date cannot exceed character limit: 8 and in the format YYYY.MM.DD,Conformity,Capitalization Date
+Asset Master,Finance,Master,19,Country should not be null or blank,Completeness,Country
+Asset Master,Finance,Master,20,"Depreciation Area should not be null or blank, numeric and length of 2 or less",Conformity,Depreciation Area
+Asset Master,Finance,Master,21,Useful life needs to be available for all depreciation areas. ,Completeness,Useful Life
+Asset Master,Finance,Master,22,Cost Center should not be blank,Completeness,Cost Center
+Asset Master,Finance,Master,23,Cost center mapped to asset should not be blocked or marked for deletion.,Integrity,Cost Center
+Bank Master,Finance,Master,1,Identify unused bank master data (not assigned to a valid vendor / not used in a valid house bank) can be left out of the conversion process.,Relevancy,Active Count
+Bank Master,Finance,Master,2,Identify records which are marked for deletion in bank master table [BNKA.LOEVM],Relevancy,Active Count
+Bank Master,Finance,Master,3,Check bank key values exist,Completeness,Bank Key
+Bank Master,Finance,Master,4,"Check to ensure that bank key matches the length restrictions per country standards [T005.LNBKS]. If not maintained appropriately, it may result in a payment failure.",Integrity,Bank Key
+Bank Master,Finance,Master,5,Identify duplicate based on bank keys,Uniqueness,Duplicate Check
+Bank Master,Finance,Master,6,Check if SWIFT Code is present. Many North American and European countries mandate a SWIFT code in the payment instruction for making a Wire payment in those countries.,Completeness,Swift Code
+Bank Master,Finance,Master,7,Check that bank name is not blank or NULL. A blank bank name can result in failures while making a payment to the business partners. ,Completeness,Bank Name
+Bank Master,Finance,Master,8,Check Bank Street Address is present. Many payment methods in different countries expect the vendor/customer bank addresses to be sent as part of the payment instruction. This is a key criteria for the bank master. ,Completeness,Address
+Bank Master,Finance,Master,9,Check Bank City Name is present. Many payment methods in different countries expect the vendor/customer bank addresses to be sent as part of the payment instruction. This is a key criteria for the bank master. ,Completeness,Address
+Bank Master,Finance,Master,10,Check Bank Region Code is present. Many payment methods in different countries expect the vendor/customer bank addresses to be sent as part of the payment instruction. This is a key criteria for the bank master. ,Completeness,Address
+Bank Master,Finance,Master,11,Check Bank number exists,Completeness,Bank Number
+Bank Master,Finance,Master,12,Check and ensure that the bank number length matches the standard SAP country wise bank number length specifications [T005. LNBKN],Integrity,Bank Number
+Material BOM,PP - Production Planning,Master,1,Check BOM Status. Key which describes the current processing status of the BOM. This field can be defaulted in SAP customization setting however its required to pass while creating BOM.,Relevancy,Active Count
+Material BOM,PP - Production Planning,Master,2,Check deletion flag for BOMs. Key which describes if the BOM is marked for deletion and not in use,Relevancy,Active Count
+Material BOM,PP - Production Planning,Master,3,"Check BOM Header Material has been created in SAP for respective plant. If not maintained then system will throw an error. Check material status at plant and cross-plant level, as well as deletion flag - exclude from BoM pull.
+",Integrity,Header Material
+Material BOM,PP - Production Planning,Master,4,"Check BOM Plant. It is mandatory to pass SAP plant number. Since BOM master is plant specific, it is required to enter Plant no. while creating BOM. 
+",Integrity,Plant
+Material BOM,PP - Production Planning,Master,5,Check valid from date. Its required to pass BOM valid from date while creating BOM in SAP system,Validity,Valid from Date
+Material BOM,PP - Production Planning,Master,6,"Check valid to date. If the date is in the past, check business discontinuity of the material. ",Validity,Valid to Date
+Material BOM,PP - Production Planning,Master,7,"Short text which describes the whole BOM at header level - optional entry
+Maximum character length is 40. Description should not be Blank, Do Not Use, etc.",Validity,Short Text
+Material BOM,PP - Production Planning,Master,8,"Short text which describes the whole BOM at component level - optional entry
+Maximum character length is 40. Description should not be Blank, Do Not Use, etc.",Validity,Short Text
+Material BOM,PP - Production Planning,Master,9,"Short text which describes the whole BOM at component level, line 2 - optional entry
+Maximum character length is 40. To confirm, material description is currently populated.
+Description should not be Blank, Do Not Use, etc.",Validity,Short Text
+Recipes,PP - Production Planning,Master,1,Identify records flagged for deletion,Relevancy,Active Count
+Recipes,PP - Production Planning,Master,2,Identify records with past date validity to dates and no valid / open process and planned orders. ,Relevancy,Active Count
+Recipes,PP - Production Planning,Master,3,"Check respective header material has been created; MATMAS procurement type E or X
+ZALB, ZERT, ZAAA material types for production; ZLOC for capacity only, no production",Integrity,Header Material
+Recipes,PP - Production Planning,Master,4,Check respective task list description data populated and the char length is not more than 40. Null or Blank or Do Not Use are erroneous. Typically header material description default,Validity,Task List Description
+Recipes,PP - Production Planning,Master,5,Check respective header plant data exists,Validity,Plant
+Recipes,PP - Production Planning,Master,6,"Check recipe status. Recipe status should be populated, expecting 1 = created for new product development, 4 = released for all",Validity,Recipe Status
+Recipes,PP - Production Planning,Master,7,Recipe Usage should be populate from cleansed Master data,Validity,Usage
+Recipes,PP - Production Planning,Master,8,Identify records where control key value is NULL or Blank. It is required against all primary and secondary operations; can be copied from primary to secondary resources automatically during recipe creation but primary assignment required,Completeness,Control Key
+Recipes,PP - Production Planning,Master,9,Check for any duplicate control keys,Uniqueness,Duplicate Check
+Production Version,Finance,Master,1,"Check respective header material has been created for the production version. If a material BoM exists, a Production Version must also exist (Manufacturing orders will have a recipe, Subcon will not have recipe)",Integrity,Header Material
+Production Version,Finance,Master,2,"Mandatory to pass SAP plant number. Since production version is plant specific, it required to enter Plant no. while creating production version. If there is no BoM extended to the plant, no production version is required",Integrity,Plant
+Production Version,Finance,Master,3,"Specifies the start date for the validity period of an object (such as material, BOM, or routing). Its required to pass PV valid from date while creating PV in SAP system. This date must be greater or equal to material validity.",Validity,Valid from Date
+Production Version,Finance,Master,4,Validate all Valid To dates in the past against material discontinuity status,Validity,Valid to Date
+Production Version,Finance,Master,5,"Short text which describes the production version. Its Optional to pass text in this field. Maximum character length is 40.
+Currently maintained as material description, to check other use cases and ensure consistency",Completeness,Short Text
+Production Version,Finance,Master,6,"BOM Usage should be populate from cleansed Master data
+1 - Production, 2 - Equipment, 6 - Costing
+Review current BoM usages at Apotex today, likely all should move to Production",Integrity,BOM Usage
+Production Version,Finance,Master,7,"BOM Alternate should be populated to select correct bill of material
+Should not be blank, and populated with a number ",Completeness,Alternate BOM
+Production Version,Finance,Master,8,Group ID should be input based on recipe group number; all manufacturing production versions require group ID (procurement type should be E or X),Integrity,Group Id
+Production Version,Finance,Master,9,"Group counter should be input based on recipe number within group (typically 1); all manufacturing production versions require group ID counter (not blank)
+To review if there are multiple group counters for any material at Apotex",Integrity,Group Counter
+Production Version,Finance,Master,10,"Production version ID required for all line items, four alphanumeric character restriction; should not be blank, always four digit (review exception with X?)",Completeness,Production Version ID
+Production Version,Finance,Master,11,Production version should exist at minimum once for each unique production BoM ,Completeness,Production Version ID
+Equipment,PM - Plant Maintenance,Master,1,"Check valid to date. If the date is in the past, check business discontinuity of the material. ",Relevancy,Active Count
+Equipment,PM - Plant Maintenance,Master,2,Check equipment status if the equipment is active or not. [Use EQUI and JEST table with OBJNR as joining condition to check the status from JEST table],Relevancy,Active Count
+Equipment,PM - Plant Maintenance,Master,3,Equipment number should not be blank or NULL,Completeness,Equipment Number
+Equipment,PM - Plant Maintenance,Master,4,Equipment number field length should not be more than 18 char and should not have any special char in it,Conformity,Equipment Number
+Equipment,PM - Plant Maintenance,Master,5,Equipment description shouldn't be blank,Completeness,Description
+Equipment,PM - Plant Maintenance,Master,6,"Equipment descriptions are limited to 40 characters and must begin with a noun, followed by qualifiers for the equipment. No commas should be entered to separate words or meanings in the equipment. If a separator is to be used, it should be a dash with no spaces between words. No parenthesis should be used. All capital letters should be used. Periods should not be used to end the description of the equipment",Conformity,Description
+Equipment,PM - Plant Maintenance,Master,7,"Must use a current ""Planning Plant"" from SAP [EQUI.WERK]",Completeness,Plant
+Equipment,PM - Plant Maintenance,Master,8,Check valid from date [EQUZ.DATAB]. Its required to pass valid from date while creating Equipment in SAP system,Completeness,Valid from Date
+Equipment,PM - Plant Maintenance,Master,9,Must contain a current Maintenance Work Center from SAP [EQUZ.GEWRK],Completeness,Work Center
+Equipment,PM - Plant Maintenance,Master,10,Equipment category should not be NULL or blank,Completeness,Equipment Category
+Equipment,PM - Plant Maintenance,Master,11,Valid from date is mandatory and should exists for the equipment,Completeness,Valid From Date
+Equipment,PM - Plant Maintenance,Master,12,"Legacy system should send the Type of Technical Object. (Example: Pump, Motor, Pipe, Reactor etc.,)",Completeness,Technical Object Type
+Equipment,PM - Plant Maintenance,Master,13,"Legacy system should send the manufacturer details, such as Manufacturer of the asset, Country/Region of the Manufacturer, Manufacturer model number, Manufacturer serial number, Manufacturer part number, year and month of the construction (as available)",Completeness,Manufacturer details
+Internal Order,Finance,Master,1,Check if the orders are active and not blocked/settled,Relevancy,Active Count
+Internal Order,Finance,Master,2,Check if the orders are marked for deletion,Relevancy,Active Count
+Internal Order,Finance,Master,3,Check if there has been no activity in the internal order for last one year,Relevancy,Active Count
+Internal Order,Finance,Master,4,Check if company code is exist in target system,Integrity,Company Code
+Internal Order,Finance,Master,5,Check if the cost center assigned in Order or in settlement rule are active and not blocked.,Integrity,Cost Center
+Internal Order,Finance,Master,6,Check the Order type matches the SAP configured values,Integrity,Order Type
+Internal Order,Finance,Master,7,Check if the GL assigned in Order or in settlement rule are active and not blocked.,Integrity,GL Account
+Internal Order,Finance,Master,8,Check if the WBS assigned in Order or in settlement rule are active and not blocked.,Integrity,WBS
+Internal Order,Finance,Master,9,Check if the profit center assigned in Order or in settlement rule are active and not blocked.,Integrity,Profit Center
+Work Center,PM - Plant Maintenance,Master,1,Check if the work center is active and not marked for deletion,Relevancy,Active Count
+Work Center,PM - Plant Maintenance,Master,2,Check the work center id exists,Completeness,Work Center
+Work Center,PM - Plant Maintenance,Master,3,Check the work center id should not be more than 8 char,Conformity,Work Center
+Work Center,PM - Plant Maintenance,Master,4,Corresponding plant values should be existing in system before loading the work centers,Integrity,Plant
+Work Center,PM - Plant Maintenance,Master,5,Ensure correct Work Center Category is defined for each Work Center,Validity,Category
+Work Center,PM - Plant Maintenance,Master,6,Ensure description field is not more than 40 characters and doesn't contain any special char,Conformity,Description
+Work Center,PM - Plant Maintenance,Master,7,Ensure Person Responsible is defined for each Work Center,Completeness,Person responsible
+Work Center,PM - Plant Maintenance,Master,8,Ensure correct Usage is defined for each Work Center,Completeness,Usage
+Work Center,PM - Plant Maintenance,Master,9,Check Cost Center is defined for each Work Center,Completeness,Cost Center
+Work Center,PM - Plant Maintenance,Master,10,Check Start Date is defined for each Work Center,Completeness,Start Date
+Work Center,PM - Plant Maintenance,Master,11,Check End Date is defined for each Work Center,Completeness,End Date
+Document Info Records,QM - Quality Management ,Master,1,Document number should exist,Completeness,Document Number
+Document Info Records,QM - Quality Management ,Master,2,Document number should be limited to 80 characters and should not include any special characters [unless approved by the business for a specific character],Conformity,Document Number
+Document Info Records,QM - Quality Management ,Master,3,Document type should not be blank or NULL,Completeness,Document Type
+Document Info Records,QM - Quality Management ,Master,4,Document type should be limited to 80 characters,Conformity,Document Type
+Document Info Records,QM - Quality Management ,Master,5,Document part should exist,Completeness,Document Part
+Document Info Records,QM - Quality Management ,Master,6,Document part should be limited to 3 characters,Conformity,Document Part
+Document Info Records,QM - Quality Management ,Master,7,Document version should not be blank or NULL,Completeness,Document Version
+Document Info Records,QM - Quality Management ,Master,8,Document version should be limited to 2 characters,Conformity,Document Version
+Document Info Records,QM - Quality Management ,Master,9,Info records system should have a description (40 characters maximum). Should not have any special char (unless approved by business),Conformity,Description
+Document Info Records,QM - Quality Management ,Master,10,Info records system should send the document part of the source document (80 characters maximum),Conformity,Document Part
+Document Info Records,QM - Quality Management ,Master,11,Info records system should send the document version of the source document (80 characters maximum),Conformity,Document Version
+Service Master,MM - Material Management,Master,1,Product number should exist,Completeness,Product Number
+Service Master,MM - Material Management,Master,2,Product number should be limited to 80 characters and should not include any special characters [unless approved by the business for a specific character],Conformity,Product Number
+Service Master,MM - Material Management,Master,3,Product type should not be blank or NULL,Completeness,Product Type
+Service Master,MM - Material Management,Master,4,Product type should be limited to 80 characters and should not include any special characters [unless approved by the business for a specific character],Conformity,Product Type
+Service Master,MM - Material Management,Master,5,Product description should exist,Completeness,Description
+Service Master,MM - Material Management,Master,6,Product description should be limited to 40 characters and should not include any special characters [unless approved by the business for a specific character],Conformity,Description
+Service Master,MM - Material Management,Master,7,Language key should exist,Completeness,Language Key
+Service Master,MM - Material Management,Master,8,Language key should be limited to 80 characters and should not include any special characters [unless approved by the business for a specific character],Conformity,Language Key
+Service Master,MM - Material Management,Master,9,Base unit of measure should not be blank or NULL ,Completeness,Base Unit of Measure
+Service Master,MM - Material Management,Master,10,Base unit of measure should be compliant with ISO format and should not exceed 80 characters,Conformity,Base Unit of Measure
+Service Master,MM - Material Management,Master,11,"Service product system should send the product category data, such as the product group (80 characters maximum) and the industry sector (80 characters maximum), as available",Conformity,Product Category
+Service Master,MM - Material Management,Master,12,"Service product system should send the authorization group (4 characters maximum), if available",Conformity,Authorization Group
+Service Master,MM - Material Management,Master,13,"Service product system should send the cross-plant product status (80 characters maximum), if available",Conformity,Product Status
+Service Master,MM - Material Management,Master,14,"Service product system should send the purchasing value key (80 characters maximum), if available",Conformity,Purchasing Value Key
+Inspection Method,QM - Quality Management ,Master,1,Plant for the Inspection method should exist,Completeness,Plant
+Inspection Method,QM - Quality Management ,Master,2,Inspection Method values should exist,Completeness,Inspection Method
+Inspection Method,QM - Quality Management ,Master,3,Inspection Method should be limited to 80 characters and should not include any special characters [unless approved by the business for a specific character],Conformity,Inspection Method
+Inspection Method,QM - Quality Management ,Master,4,Each Plant/Inspection Method combination should be unique. (Each Plant should have distinct inspection methods),Uniqueness,Duplicate check
+Inspection Method,QM - Quality Management ,Master,5,Valid-From Date is mandatory and should exist for each Plant & Inspection Method pair,Completeness,Valid-From Date
+Inspection Method,QM - Quality Management ,Master,6,All Valid-From Date values should follow the S/4 date format <<YYYY/MM/DD>> [configured date format ],Conformity,Valid-From Date
+Inspection Method,QM - Quality Management ,Master,7,Master Record Status is mandatory and should exist,Completeness,Status
+Inspection Method,QM - Quality Management ,Master,8,Master Record Status should not be more than 80 characters,Conformity,Status
+Inspection Method,QM - Quality Management ,Master,9,Search Field is mandatory and should exist,Completeness,Search Field
+Inspection Method,QM - Quality Management ,Master,10,Search Field should not be more than 40 characters,Conformity,Search Field
+Inspection Method,QM - Quality Management ,Master,11,Language Key should exist,Completeness,Language Key
+Inspection Method,QM - Quality Management ,Master,12,"Each combination of Plant, Inspection Method, and Language Key should be unique",Uniqueness,Duplicate check
+Inspection Method,QM - Quality Management ,Master,13,Every inspection method should have Short Text,Completeness,Short Text
+Inspection Method,QM - Quality Management ,Master,14,Short Text should be limited to 80 characters and should not include any special characters [unless approved by the business for a specific character],Conformity,Short Text
+Classes,"Cross module [PM, MM, PP, SD, QM]",Master,1,Each Class should have a Mandatory Class Number. Length of the Class Number Should not be more than 18,Completeness,Class Number
+Classes,"Cross module [PM, MM, PP, SD, QM]",Master,2,Each Class should have a mandatory class Type,Completeness,Class Type
+Classes,"Cross module [PM, MM, PP, SD, QM]",Master,3,Each class should have a Validity Start date,Completeness,Valid-From Date
+Classes,"Cross module [PM, MM, PP, SD, QM]",Master,4,All Valid-From Date values should follow the S/4 date format <<YYYY/MM/DD>> [configured date format ],Conformity,Valid-From Date
+Classes,"Cross module [PM, MM, PP, SD, QM]",Master,5,"Class Validity End, Valid To date should not be less than today's date",Conformity,Valid-to Date
+Classes,"Cross module [PM, MM, PP, SD, QM]",Master,6,Class should have mandatory description,Completeness,Description
+Classes,"Cross module [PM, MM, PP, SD, QM]",Master,7,Class description length should not exceed 40 Characters and it should not include any special characters [unless approved by the business for a specific character],Conformity,Description
+Classes,"Cross module [PM, MM, PP, SD, QM]",Master,8,Characteristics associated with the Class are maintained. A class can have multiple Characteristics. A class should have at least one Characteristic associated with it.,Validity,Characteristics
+Classes,"Cross module [PM, MM, PP, SD, QM]",Master,9,Each class should have (predefined/configured) a status value exists,Completeness,Status
+Classes,"Cross module [PM, MM, PP, SD, QM]",Master,9,Check duplicate classes based on Class Type and Class Description,Uniqueness,Duplicate Check
+Classes,"Cross module [PM, MM, PP, SD, QM]",Master,11,Only classes with status as 'Active' should be considered.,Relevancy,Active Count
+Customer Material Info Records,SD - Sales & Distribution,Master,1,"Check the count for active CMIR record. To check, consider only active customers, and duplicate and inactive customer records should not be considered",Relevancy,Active Count
+Customer Material Info Records,SD - Sales & Distribution,Master,2,Active Materials count to be identified that will be defined with Customer,Relevancy,Active Count
+Customer Material Info Records,SD - Sales & Distribution,Master,3,"Ensure the Search term is maintained, its an optional field. It's recommended to maintain as the field is used to search a record based on some unique identifier assigned",Completeness,Search Field
+Customer Material Info Records,SD - Sales & Distribution,Master,4,Ensure plant is defined and material is extended to the plant,Validity,Plant
+Customer Material Info Records,SD - Sales & Distribution,Master,5,Ensure Rounding profile setup is available in system. Rounding profile is used to Round up/down the material quantity as per customer preference,Completeness,Rounding Profile
+Customer Material Info Records,SD - Sales & Distribution,Master,6,Ensure correct sales organization codes are defined for each customer material info record in legacy system,Integrity,sales Org
+Customer Material Info Records,SD - Sales & Distribution,Master,7,Ensure correct Delivery Priority is maintained for each records in legacy system if applicable for the CMIR,Integrity,Delivery Priority
+Products,MM - Material Management,Master,1,Product Number should exist,Completeness,Product Number
+Products,MM - Material Management,Master,2,Product Number should limit to char 80 and should not contain any special char [unless approved by business for any specific char presence is valid],Conformity,Product Number
+Products,MM - Material Management,Master,3,Product Type should not be NULL or blank ,Completeness,Product Type
+Products,MM - Material Management,Master,4,Description should exist,Completeness,Description
+Products,MM - Material Management,Master,5,Description should limit to char 40 and should not contain any special char [unless approved by business for any specific char presence is valid],Conformity,Description
+Products,MM - Material Management,Master,6,Language Key should exist,Completeness,Language Key
+Products,MM - Material Management,Master,7,Base Unit of Measure (ISO format) for header data should not be NULL of blank,Completeness,Unit of Measure - Header Data
+Products,MM - Material Management,Master,8,"Basic Data recommended to be populated such as Division, Old Product Number, Product Hierarchy, Brand, etc.",Completeness,Basic Data
+Products,MM - Material Management,Master,9,Specifies the start date for the validity period of the product. Its recommend to pass a valid from date while creating a product in SAP system.,Completeness,Valid from Date
+Products,MM - Material Management,Master,10,"Check if the ""Deletion Date"" field is populated. If yes, then the respective record is no longer an active record and should not be considered for migration. ",Relevancy,Active Count
+Products,MM - Material Management,Master,11,"Check if the product dimension values are populated for the active products in source such as Gross Weight, Net Weight, Unit of Weight (ISO format), Length, Width, Height, Unit for Length/Width/Height(ISO format), Volume, Volume Unit, Capacity Usage",Completeness,Unit of Measure Dimensions
+Products,MM - Material Management,Master,12,"If the product has Gross Weight, Net Weight values then it should also have Unit of Weight (ISO format). Unit of Weight (ISO format) should not be blank for those records",Validity,Unit of Measure Dimensions
+Products,MM - Material Management,Master,13,"If the product has Length, Width, Height values then it should also have Unit for them. Unit for Length/Width/Height should not be blank for those records",Validity,Unit of Measure Dimensions
+Products,MM - Material Management,Master,14,If the product has volume information then it should also have Unit of volume.  Volume Unit should not be blank for those records,Validity,Unit of Measure Dimensions
+Products,MM - Material Management,Master,15,Check if the product if active if it has Total Shelf Life value populated,Validity,Total shelf life
+Products,MM - Material Management,Master,16,Check for any active product if Product is Configurable,Completeness,Configuration
+Products,MM - Material Management,Master,17,"Check if the product has any specific purchase value maintained such as Order Unit of Measure (ISO format), Purchasing Value Key, State of Variable Purchase Order Unit",Completeness,Purchasing Value
+Products,MM - Material Management,Master,18,"Check if the product has any specific purchasing manufacturing data maintained such as Manufacturer Part Number, Manufacturer Number, Manufacturer Part Profile",Completeness,Purchasing - Manufacturer Data
+Products,MM - Material Management,Master,19,Check if the product is active and also flagged for Hazardous Substances,Completeness,Hazardous Substances
+Products,MM - Material Management,Master,20,Check if the product is active and also flagged for Hazardous Substances it should have a Handling Indicator,Validity,Hazardous Substances
+Characteristics,"Cross module [PM, MM, PP, SD, QM]",Master,1,Characteristic Name should not be Null or Blank,Completeness,Characteristic Name
+Characteristics,"Cross module [PM, MM, PP, SD, QM]",Master,2,Characteristics Name should be unique,Uniqueness,Characteristic Name
+Characteristics,"Cross module [PM, MM, PP, SD, QM]",Master,3,Characteristics Name should limit to char 80 limit and should not contain any special char [unless approved by business for any specific char presence is valid],Conformity,Characteristic Name
+Characteristics,"Cross module [PM, MM, PP, SD, QM]",Master,4,"Characteristic Status should be either 0,1,2 and must exists",Conformity,Status
+Characteristics,"Cross module [PM, MM, PP, SD, QM]",Master,5,"Data Type of Char can be either Char,CURR,DATE,NUM,TIME,UDEF",Conformity,Format
+Characteristics,"Cross module [PM, MM, PP, SD, QM]",Master,6,Single/Multiple Values should exists and can be either 'S' or 'M',Conformity,Format
+Characteristics,"Cross module [PM, MM, PP, SD, QM]",Master,7,"Number of Characters check. Total number of characters that can be entered when assign a value to this characteristic. This figure includes the number of decimal places. For Data Type Char, the length can be 30 Characters max'",Completeness,Format
+Characteristics,"Cross module [PM, MM, PP, SD, QM]",Master,8,Language should be in ISO format(t002),Conformity,Language
+Characteristics,"Cross module [PM, MM, PP, SD, QM]",Master,9,Ensure Currency of the Characteristic (if Data Type is Currency) exists,Completeness,Currency
+Characteristics,"Cross module [PM, MM, PP, SD, QM]",Master,10,Characteristics Description should not be NULL or blank,Completeness,Description
+Characteristics,"Cross module [PM, MM, PP, SD, QM]",Master,11,Characteristics Description length should be <= 30,Conformity,Description
+Characteristics,"Cross module [PM, MM, PP, SD, QM]",Master,12,Characteristics Value Name and Item number combination should be unique,Uniqueness,Characteristic Value
+Characteristics,"Cross module [PM, MM, PP, SD, QM]",Master,13,Characteristics Value item should be between 0000 and 9999,Conformity,Characteristic Value
+Characteristics,"Cross module [PM, MM, PP, SD, QM]",Master,14,"Document data such as Document Number, Document Type, Document version, Document Part should be populated if available in legacy",Completeness,Document Data
+Purchase Info Records,MM - Material Management,Master,1,Purchasing Info number should exist,Completeness,Purchasing Info Number
+Purchase Info Records,MM - Material Management,Master,2,Purchasing number should be limited to 80 characters alphanumeric values and should not include any special characters [unless approved by the business for a specific character],Conformity,Purchasing Info Number
+Purchase Info Records,MM - Material Management,Master,3,Purchasing Info Number should be unique,Uniqueness,Duplicate Check
+Purchase Info Records,MM - Material Management,Master,4,Product Number should exist and should be limited to 80 characters,Completeness,Product Number
+Purchase Info Records,MM - Material Management,Master,5,PIR should be associated with a product which is active and extended to relevant Plant,Integrity,Product Number
+Purchase Info Records,MM - Material Management,Master,6,Supplier's Account Number is mandatory and should exist,Completeness,Supplier Number
+Purchase Info Records,MM - Material Management,Master,7,PIR should be associated with an active supplier and extended to relevant purchase org,Integrity,Supplier Number
+Purchase Info Records,MM - Material Management,Master,8,There should be short texts for every Purchasing Info Record ,Completeness,Short Text
+Purchase Info Records,MM - Material Management,Master,9,"Network system should send Supplier Data as available (Product Number used by Supplier, Salesperson, Phone Number, Supplier Product Group, etc.)",Completeness,Supplier Data
+Purchase Info Records,MM - Material Management,Master,10,"Origin Data should be included as available (Country/Region of Origin, Manufacturer, etc.)",Completeness,Origin Data
+Purchase Info Records,MM - Material Management,Master,11,Valid currency must be available,Completeness,Currency 
+Purchase Info Records,MM - Material Management,Master,12,Plant value should exists for the PIR,Completeness,Plant
+Purchase Info Records,MM - Material Management,Master,13,Purchasing Org data should exists,Completeness,Purchase Org
+Purchase Info Records,MM - Material Management,Master,14,Order unit should be populated,Completeness,Unit of Measure
+Purchase Info Records,MM - Material Management,Master,15,Quantity conversion numerator and Denominator must be defined.,Completeness,Unit of Measure
+Source List,MM - Material Management,Master,1,Source list number should exist,Completeness,Source List Number
+Source List,MM - Material Management,Master,2,Source list number should be limited to 20 characters and may contain alphanumeric values but should not include any special characters [unless approved by the business for a specific character],Conformity,Source List Number
+Source List,MM - Material Management,Master,3,Product number is required and should not be blank or NULL for every source list,Completeness,Product Number
+Source List,MM - Material Management,Master,4,Product number should not exceed 80 characters and should not include any special characters [unless approved by the business for a specific character],Conformity,Product Number
+Source List,MM - Material Management,Master,5,Plant is required and should be configured in the system before loading source list,Completeness,Plant
+Source List,MM - Material Management,Master,6,Source list record valid from date is mandatory and should not be blank or NULL,Completeness,Valid From Date
+Source List,MM - Material Management,Master,7,All Valid-From Date values should follow the S/4 date format <<YYYY/MM/DD>> [configured date format],Conformity,Valid From Date
+Source List,MM - Material Management,Master,8,Source list record valid to date is mandatory and should not be blank or NULL,Completeness,Valid To Date
+Source List,MM - Material Management,Master,9,All Valid-To Date values should follow the S/4 date format <<YYYY/MM/DD>> [configured date format],Conformity,Valid To Date
+Source List,MM - Material Management,Master,10,Validity End check :- Valid To date should not be less than today's date,Validity,Valid To Date
+Source List,MM - Material Management,Master,11,Purchasing organization should not be blank or NULL for each source list,Completeness,Purchasing Organization
+Source List,MM - Material Management,Master,12,"Source list system should send the supplier's account number (80 characters maximum), if available",Completeness,Supplier's Account Number
+Source List,MM - Material Management,Master,13,"Source list system should send the agreement information as available (such as agreement type, online purchase agreement number, agreement item, etc.)",Completeness,Agreement Information
+Source List,MM - Material Management,Master,14,"Source list system should send the fixed supplier indicator ('X' or ' '), if available",Completeness,Fixed Supplier
+Source List,MM - Material Management,Master,15,Source list system should mark the blocked indicator ('X' or ' ') as applicable. This will help to determine the active source list data for migration,Relevancy,Active Count
+Source List,MM - Material Management,Master,16,"Source list system should send the source list usage in products (80 characters maximum), if available",Completeness,Source List Usage
+Source List,MM - Material Management,Master,17,"Each combination of Plant, product number and source list number should be unique",Uniqueness,Duplicate check
+Source List,MM - Material Management,Master,18,For each source list associated product/material should be an active product/material,Relevancy,Active Count
+Source List,MM - Material Management,Master,19,For each source list associated supplier data should exists and should be an active supplier,Relevancy,Active Count
+Project Master,PS - Project System,Master,1,Project definition should not be NULL or blank,Completeness,Project Definition
+Project Master,PS - Project System,Master,2,Project definition should limit to char 80 limit and should not contain any special char [unless approved by business for any specific char presence is valid],Conformity,Project Definition
+Project Master,PS - Project System,Master,3,Project profile for the project is mandatory,Completeness,Project Profile
+Project Master,PS - Project System,Master,4,Project profile should limit to char 80 limit and should not contain any special char [unless approved by business for any specific char presence is valid],Conformity,Project Profile
+Project Master,PS - Project System,Master,5,Short description is not a mandatory field but recommend to have one if available. It should be limit to char 40 and should not contain any special char [unless approved by business for any specific char presence is valid],Conformity,Short Description
+Project Master,PS - Project System,Master,6,Responsibilities should include the ID of the responsible person and the applicant number (as available),Completeness,Responsibilities
+Project Master,PS - Project System,Master,7,"Organization details such as the controlling area, company code, business area, plant, location, functional area, profit center and project currency should be provided (as available)",Completeness,Organization details
+Project Master,PS - Project System,Master,8,"Details on the project dates recommend to provide such as start date, end date, factory calendar key, time unit, forecast start date and the forecast finish date etc.",Completeness,Project dates
+Project Master,PS - Project System,Master,9,"Sales pricing details if applicable should be provided - such as sales organization, distribution channel, division and the dynamic item processor profile etc.",Completeness,Sales Pricing Details
+Work Breakdown Structure (WBS),PS - Project System,Master,1,Project definition should not be NULL or blank,Completeness,Project Definition
+Work Breakdown Structure (WBS),PS - Project System,Master,2,Project definition should limit to char 80 limit and should not contain any special char [unless approved by business for any specific char presence is valid],Conformity,Project Definition
+Work Breakdown Structure (WBS),PS - Project System,Master,3,Work Breakdown Structure (WBS) element for the project is mandatory,Completeness,WBS Element
+Work Breakdown Structure (WBS),PS - Project System,Master,4,"Basic data such as the Parent WBS, project type and priority should be provided (as available)",Completeness,Basic Data
+Work Breakdown Structure (WBS),PS - Project System,Master,5,Short description of the project should limit to char 40 limit,Conformity,Short Description
+Work Breakdown Structure (WBS),PS - Project System,Master,6,"Responsibilities details (80 characters limit unless indicated otherwise) including the ID of the responsible person, the applicant number, the responsible cost center and its controlling area, the request cost center and its controlling area and the requesting company code should be provided (as available)",Completeness,Responsibilities
+Work Breakdown Structure (WBS),PS - Project System,Master,7,"Operative indicators (1 character limit) for the planning element, account assignment, billing element and grouping WBS element (80 characters limit) should be provided (if available)",Completeness,Operative Indicators
+Work Breakdown Structure (WBS),PS - Project System,Master,8,"Details on the basic dates such as basic start date, basic end date, duration (number of length 5 at max) and unit of duration should be provided (as available)",Completeness,Basic Dates
+Work Breakdown Structure (WBS),PS - Project System,Master,9,"Date fields should follow the S/4 date format, if provided",Conformity,Basic Dates
+Work Breakdown Structure (WBS),PS - Project System,Master,10,"Basic end date should be greater than the basic start date, if provided",Validity,Basic Dates
+Work Breakdown Structure (WBS),PS - Project System,Master,11,"Details on the forecast dates such as forecast start date, forecast end date, duration (number of length 5 at max) and unit of duration should be provided (as available)",Completeness,Forecast Dates
+Work Breakdown Structure (WBS),PS - Project System,Master,12,"Forecast dates should follow the S/4 date format, if provided",Conformity,Forecast Dates
+Work Breakdown Structure (WBS),PS - Project System,Master,13,"Forecast end date should be greater than the forecast start date, if provided",Validity,Forecast Dates
+Work Breakdown Structure (WBS),PS - Project System,Master,14,"Details of assignments such as the plant, location, functional area, profit center, equipment number, functional location should be provided (as available)",Completeness,Assignments
+Work Breakdown Structure (WBS),PS - Project System,Master,15,Ensure the assigned Plant is active for the WBS element,Integrity,Plant
+Work Breakdown Structure (WBS),PS - Project System,Master,16,"Check whether planning indicator field is marked [as 'X']. This indicator controls whether a cost planning is possible only in those WBS elements or not, If its marked as ""X"", then WBS is meant for planning",Validity,Planning Element
+Work Breakdown Structure (WBS),PS - Project System,Master,17,Check whether account assignment indicator field is marked [as 'X']. This indicator controls whether an actual cost and commitment can be post for a WBS element,Validity,Account Assignment
+Work Breakdown Structure (WBS),PS - Project System,Master,18,"Check Billing Element indicator. If you want to post revenues to a WBS element, you have to indicate that the WBS element is a billing element in the WBS , i.e. this field is marked as ""X""",Validity,Billing Element
+Project Network,PS - Project System,Master,1,Network number should exist,Completeness,Network Number
+Project Network,PS - Project System,Master,2,"Network number should be limited to 80 characters, and should not include any special characters [unless approved by the business for a specific character]",Conformity,Network Number
+Project Network,PS - Project System,Master,3,Network type is required and should not be blank or NULL,Completeness,Network Type
+Project Network,PS - Project System,Master,4,"Network type should not exceed 80 characters, and should not include any special characters [unless approved by the business for a specific character]",Conformity,Network Type
+Project Network,PS - Project System,Master,5,Network profile should exist,Completeness,Network Profile
+Project Network,PS - Project System,Master,6,Network profile should be limited to 80 characters,Conformity,Network Profile
+Project Network,PS - Project System,Master,7,Plant data should exists for associated project network,Completeness,Plant
+Project Network,PS - Project System,Master,8,MRP controller should exist for the project network,Completeness,MRP Controller
+Project Network,PS - Project System,Master,9,"MRP controller should be limited to 80 characters, and should not include any special characters [unless approved by the business for a specific character]",Conformity,MRP Controller
+Project Network,PS - Project System,Master,10,Currency key is mandatory and should not be blank or NULL,Completeness,Currency Key
+Project Network,PS - Project System,Master,11,"Network system should send the description (40 characters maximum), if available",Conformity,Description
+Project Network,PS - Project System,Master,12,"Network system should send the basic start date and the basic finish date, as available",Completeness,Date Range
+Project Network,PS - Project System,Master,13,"Network system should send the scheduling information as available (such as scheduling type, don't schedule indicator, don't capacity requirement indicator, exact break times indicator etc.)",Completeness,Scheduling Information
+Project Network,PS - Project System,Master,14,"Network system should send the project definition (80 characters maximum), if available",Completeness,Project Definition
+Project Network,PS - Project System,Master,15,"Network system should send the WBS element (80 characters maximum), if available",Completeness,WBS Element
+Project Network,PS - Project System,Master,16,"Network system should send the assignments, such as the business area (80 characters maximum), profit center (80 characters maximum), functional area (80 characters maximum), and the object class (80 characters maximum), as available",Completeness,Assignments
+Project Network,PS - Project System,Master,17,"Network system should send the tax jurisdiction (15 characters maximum), if available",Completeness,Tax Jurisdiction
+Project Network,PS - Project System,Master,18,"Network system should send the responsible planner group or department (80 characters), if available",Completeness,Responsible Planner
+Equipment Task List,PM - Plant Maintenance,Master,1,Equipment number is mandatory and should exist,Completeness,Equipment Number
+Equipment Task List,PM - Plant Maintenance,Master,2,"Equipment number should not exceed 80 characters, and should not contain any special characters [unless approved by the business for a specific character]",Conformity,Equipment Number
+Equipment Task List,PM - Plant Maintenance,Master,3,Group counter should not be blank or NULL,Completeness,Group Counter
+Equipment Task List,PM - Plant Maintenance,Master,4,Group counter must be limited to 2 characters and should include a leading zero. No special characters should be used unless approved by the business for a specific character,Conformity,Group Counter
+Equipment Task List,PM - Plant Maintenance,Master,5,Activity number is required and should not be blank or NULL,Completeness,Activity Number
+Equipment Task List,PM - Plant Maintenance,Master,6,Activity number should be limited to 4 characters and should not include any special characters [unless approved by the business for a specific character],Conformity,Activity Number
+Equipment Task List,PM - Plant Maintenance,Master,7,"For task list header data, combination of Equipment number and group counter data should be unique",Uniqueness,Duplicate Check
+Equipment Task List,PM - Plant Maintenance,Master,8,"For task list operations data, combination of equipment number, group counter, and activity number should be unique",Uniqueness,Duplicate Check
+Equipment Task List,PM - Plant Maintenance,Master,9,"Equipment task list system should send the valid-from date (in S/4 date format <<YYYY/MM/DD>>), if available",Completeness,Valid-From Date
+Equipment Task List,PM - Plant Maintenance,Master,10,"Equipment task list system should send the description, if available",Completeness,Description
+Equipment Task List,PM - Plant Maintenance,Master,11,"Description should be limited to 40 characters, and should not include any special characters [unless approved by the business for a specific character]",Conformity,Description
+Equipment Task List,PM - Plant Maintenance,Master,12,"Equipment task list system should send the planning plant (80 characters maximum), if available",Completeness,Planning Plant
+Equipment Task List,PM - Plant Maintenance,Master,13,"Equipment task list system should send the work center and the work center plant (80 characters maximum), as available.",Completeness,Work Center
+Equipment Task List,PM - Plant Maintenance,Master,14,"Equipment task list system should send the task list usage (80 characters maximum), if available",Completeness,Task List Usage
+Equipment Task List,PM - Plant Maintenance,Master,15,"Equipment task list system should send the overall status (80 characters maximum), if available",Completeness,Overall Status
+Equipment Task List,PM - Plant Maintenance,Master,16,Status assigned should be predefined/configured and should exist,Completeness,Overall Status
+Equipment Task List,PM - Plant Maintenance,Master,17,"Equipment task list system should send the maintenance strategy (80 characters maximum), if available",Completeness,Maintenance Strategy
+Equipment Task List,PM - Plant Maintenance,Master,18,"Equipment task list system should send the planner group (80 characters maximum), if available",Completeness,Planner Group
+Equipment Task List,PM - Plant Maintenance,Master,19,"Equipment task list system should send the control key (80 characters maximum), if available",Completeness,Control Key
+Equipment Task List,PM - Plant Maintenance,Master,20,"For each equipment task list, the associated Equipment should be active",Relevancy,Active Count
+Equipment Task List,PM - Plant Maintenance,Master,21,"For each equipment task list, the product data should exist and should be active",Relevancy,Active Count
+Functional Location Task List,PM - Plant Maintenance,Master,1,Functional Location is mandatory and should exist ,Completeness,Functional Location 
+Functional Location Task List,PM - Plant Maintenance,Master,2,Functional Location should be an active functional location configured in S/4,Integrity,Functional Location 
+Functional Location Task List,PM - Plant Maintenance,Master,3,Ensure the corresponding material data exists in S/4 and its an active material,Integrity,Material
+Functional Location Task List,PM - Plant Maintenance,Master,4,Group Counter is mandatory and should exist,Completeness,Group Counter
+Functional Location Task List,PM - Plant Maintenance,Master,5,Group Counter should be limited to 2 characters only,Conformity,Group Counter
+Functional Location Task List,PM - Plant Maintenance,Master,6,"For Task list header data, make sure every Functional Location & Group Counter pair is unique",Uniqueness,Duplicate Check
+Functional Location Task List,PM - Plant Maintenance,Master,7,Check if the task list has a valid from date assigned,Completeness,Valid-from date
+Functional Location Task List,PM - Plant Maintenance,Master,8,Check if the task list has a valid description and it should be limit to char 40,Completeness,Description
+Functional Location Task List,PM - Plant Maintenance,Master,9,Each Functional Location & Group Counter pair should have a (predefined/configured) status value,Completeness,Status
+Functional Location Task List,PM - Plant Maintenance,Master,10,Activity Number is mandatory and should exist,Completeness,Activity Number
+Functional Location Task List,PM - Plant Maintenance,Master,11,Activity Number should contain only number and be limited to 4 characters,Conformity,Activity Number
+Functional Location Task List,PM - Plant Maintenance,Master,12,"For task list operation data , ensure every Functional Location, Group Counter, and Activity Number combination should be unique",Uniqueness,Duplicate Check
+Functional Location Task List,PM - Plant Maintenance,Master,13,All Creation Date and Valid-from Date values should follow the S/4 date format <<YYYY/MM/DD>>,Conformity,Dates
+Functional Location Task List,PM - Plant Maintenance,Master,14,Work Centre is mandatory and should exist for the Functional Location Task List,Completeness,Work Centre
+Functional Location Task List,PM - Plant Maintenance,Master,15,Functional Location Task List should be associated with a Work Centre that is active and extended to relevant Work Centre Plant,Integrity,Work Centre
+Functional Location Task List,PM - Plant Maintenance,Master,16,Check the equipment is active if mentioned in the operation details,Integrity,Equipment number
+Functional Location Task List,PM - Plant Maintenance,Master,17,Check if the functional location task list header data has any long text data which will be required migration,Completeness,Long Text
+Functional Location Task List,PM - Plant Maintenance,Master,18,Check if the functional location task list operation data has any long text data which will be required migration,Completeness,Long Text
+General Task List,PM - Plant Maintenance,Master,1,Task list group is mandatory and should exist,Completeness,Task List Group
+General Task List,PM - Plant Maintenance,Master,2,"Key for task list group should not exceed 8 characters, and should not contain any special characters",Conformity,Task List Group
+General Task List,PM - Plant Maintenance,Master,3,Group counter should not be blank or NULL,Completeness,Group Counter
+General Task List,PM - Plant Maintenance,Master,4,Group counter must be limited to 2 characters and should include a leading zero,Conformity,Group Counter
+General Task List,PM - Plant Maintenance,Master,5,Activity number is required and should not be blank or NULL,Completeness,Activity Number
+General Task List,PM - Plant Maintenance,Master,6,Activity number should be limited to 4 characters,Conformity,Activity Number
+General Task List,PM - Plant Maintenance,Master,7,"For Task list header data, each combination of task list group key and group counter should be unique",Uniqueness,Duplicate Check
+General Task List,PM - Plant Maintenance,Master,8,"For Task list operation data, each combination of task list group key, group counter, and activity number should be unique",Uniqueness,Duplicate Check
+General Task List,PM - Plant Maintenance,Master,9,"Legacy system should send the valid-from date (in S/4 date format <<YYYY/MM/DD>>), if available",Completeness,Valid-From Date
+General Task List,PM - Plant Maintenance,Master,10,"Legacy system should send the description, if available",Completeness,Header Description
+General Task List,PM - Plant Maintenance,Master,11,Description should be limited to 40 characters,Conformity,Header Description
+General Task List,PM - Plant Maintenance,Master,12,Planning plant must be configured and Legacy system should provide it,Completeness,Planning Plant
+General Task List,PM - Plant Maintenance,Master,13,"Work Center must be created and legacy system should send the work center and the work center plant (80 characters maximum), as available.",Completeness,Work Center
+General Task List,PM - Plant Maintenance,Master,14,"Legacy system should send the task list usage (80 characters maximum), if available",Completeness,Task List Usage
+General Task List,PM - Plant Maintenance,Master,15,"Legacy system should send the overall status (80 characters maximum), if available",Completeness,Overall Status
+General Task List,PM - Plant Maintenance,Master,16,"Legacy system should send the maintenance strategy (80 characters maximum), if available",Completeness,Maintenance Strategy
+General Task List,PM - Plant Maintenance,Master,17,"Legacy system should send the planner group (80 characters maximum), if available",Completeness,Planner Group
+General Task List,PM - Plant Maintenance,Master,18,Check if any header long text data available,Completeness,Header Long Text
+General Task List,PM - Plant Maintenance,Master,19,"Legacy system should send the control key (80 characters maximum), if available",Completeness,Control Key
+General Task List,PM - Plant Maintenance,Master,20,"Legacy system should send the operation description, if available",Completeness,Operation Description
+General Task List,PM - Plant Maintenance,Master,21,Operation description should be limited to 40 characters,Conformity,Operation Description
+General Task List,PM - Plant Maintenance,Master,22,"For each general task list, the associated product/material should be an active product/material",Relevancy,Active Count
+General Task List,PM - Plant Maintenance,Master,23,"Count the active general task list data. If the legacy source is ECC, check the task list data is not set for deletion (Deletion Indicator is not marked as X in PLKO.LOEKZ)",Relevancy,Active Count
+General Task List,PM - Plant Maintenance,Master,24,Check if any operation long text data available,Completeness,Operation Long Text
+Pricing Condition,MM - Material Management,Master,1,Condition Record No. should exist,Completeness,Condition Record No.
+Pricing Condition,MM - Material Management,Master,2,Condition Record No. should be unique,Uniqueness,Duplicate Check
+Pricing Condition,MM - Material Management,Master,3,Condition Record No. should limit to char 10 and should not contain any special char [unless approved by business for any specific char presence is valid],Conformity,Condition Record No.
+Pricing Condition,MM - Material Management,Master,4,Application should exist ,Completeness,Application  
+Pricing Condition,MM - Material Management,Master,5,Valid application value should exist,Integrity,Application  
+Pricing Condition,MM - Material Management,Master,6,Condition Type should not be NULL or blank,Completeness,Condition Type  
+Pricing Condition,MM - Material Management,Master,7,Ensure the corresponding Customer data exist in target system and its an active master data,Integrity,Customer
+Pricing Condition,MM - Material Management,Master,8,Ensure the corresponding Material data exist in target system and its an active master data,Integrity,Material
+Pricing Condition,MM - Material Management,Master,9,Ensure the corresponding Sales Area data exist in target system and its an active master data,Integrity,Sales Area
+Pricing Condition,MM - Material Management,Master,10,Valid From date should not be NULL or blank,Completeness,Valid From Date
+Pricing Condition,MM - Material Management,Master,11,All Valid From date values should follow the S/4 date format <<YYYY/MM/DD>> [configured date format],Conformity,Valid From Date
+Pricing Condition,MM - Material Management,Master,12,Valid To date should not be NULL or blank,Completeness,Valid To Date
+Pricing Condition,MM - Material Management,Master,13,Valid To date should not be less than today's date,Validity,Valid To Date
+Pricing Condition,MM - Material Management,Master,14,"If there are any exclusions for the specific condition record, ensure Condition exclusion indicator is populated. If the column is marked as  ""X"", it indicates that the system automatically excludes the discounts that are proposed during pricing",Validity,Condition Details
+Pricing Condition,MM - Material Management,Master,15,Check if the condition has any Additional Value Days (number of days between the billing date and the date on which the terms of payment for the sales document become effective) and Fixed Value Date (date on which the terms of payment related to the sales document become effective).,Completeness,Condition Details
+Pricing Condition,MM - Material Management,Master,16,Upper limit of the condition value should be greater than the lower limit of the condition,Validity,Condition Details
+Pricing Condition,MM - Material Management,Master,17,"Check if valid payment term value is populated. 	Payment terms are the arrangements made with a business partner for financial settlement with respect to goods supplied and services performed.",Validity,Payment Term
+Pricing Condition,MM - Material Management,Master,18,Field Name should exist,Completeness,Field Name
+Pricing Condition,MM - Material Management,Master,19,Field Name should limit to char 30 and should not contain any special char [unless approved by business for any specific char presence is valid],Conformity,Field Name
+Maintenance plan,PM - Plant Maintenance,Master,1,Maintenance Plan number should exist,Completeness,Maintenance Plan Number
+Maintenance Plan,PM - Plant Maintenance,Master,2,Maintenance Plan Category is required and should not be blank or NULL for any Maintenance Plan,Completeness,Maintenance Plan Category
+Maintenance Plan,PM - Plant Maintenance,Master,3,Maintenance Plan Text should not exceed 40 characters,Conformity,Maintenance Plan Text 
+Maintenance Plan,PM - Plant Maintenance,Master,4,Factory calendar should not exceed 2 characters and should be text,Conformity,Scheduling Parameters
+Maintenance Plan,PM - Plant Maintenance,Master,5,Factory calendar acceptable values should exist in check table TFACD,Integrity,Scheduling Parameters
+Maintenance Plan,PM - Plant Maintenance,Master,6,Unit for Scheduling Period (ISO Format) should be a unit and should only contain acceptable MEINS values,Conformity,Call Control Parameter
+Maintenance Plan,PM - Plant Maintenance,Master,7,Start of Cycle (time) should be in datetime format,Consistency,Scheduling parameters
+Maintenance Plan,PM - Plant Maintenance,Master,8,Start counter reading (performance) is a text field and if exist should not exceed 22 character length.,Conformity,Scheduling parameters
+Maintenance Plan,PM - Plant Maintenance,Master,9,Sort field acceptable values should exist in check table T399G and should not exceed 20 character length,Conformity,Additional data
+Maintenance Plan,PM - Plant Maintenance,Master,10,Authorization Group values should exist in check table T370B and should not exceed 4 character length,Conformity,Additional data
+Maintenance Plan,PM - Plant Maintenance,Master,11,Maintenance Item Number should be unique for each maintenance plan should not exceed 4 characters length,Conformity,Maintenance Item
+Maintenance Plan,PM - Plant Maintenance,Master,12,Equipment attached to the maintenance plan should be an active equipment and exist in target system,Integrity,Equipment Number
+Maintenance Plan,PM - Plant Maintenance,Master,13,Functional location should be configured for the maintenance plan,Integrity,Functional Location
+Maintenance Plan,PM - Plant Maintenance,Master,14,Assembly number should exist in MARA table,Integrity,Assembly
+Maintenance Plan,PM - Plant Maintenance,Master,15,Maintenance planning plant should exist,Completeness,Planning Plant
+Maintenance Plan,PM - Plant Maintenance,Master,16,Work Center should be active ,Completeness,Work Center
+Maintenance Plan,PM - Plant Maintenance,Master,17,Business area should be present,Completeness,Business Area
+Open AP,Finance,Transactional,1,Ensure the Company Codes value exists for the open items,Completeness,Company Code
+Open AP,Finance,Transactional,2,Ensure the correct company code values are used and configured in the system for the open items,Integrity,Company Code
+Open AP,Finance,Transactional,3,Check and ensure that the vendor number exists in the specified Company Code and is active vendor,Integrity,Vendor Number
+Open AP,Finance,Transactional,4,Ensure Reference Document Number exists,Completeness,Reference Document Number
+Open AP,Finance,Transactional,5,Make sure the Reference Document Number is limited to char 16,Conformity,Reference Document Number
+Open AP,Finance,Transactional,6,Make sure correct Offsetting Account values are maintained for the open items,Completeness,Offsetting Account
+Open AP,Finance,Transactional,7,Check and ensure valid Documents Types are defined for the open items,Completeness,Document Type
+Open AP,Finance,Transactional,8,Check and ensure valid Document Dates are defined for the open items,Completeness,Document Date
+Open AP,Finance,Transactional,9,Ensure correct Payment Terms are defined for each open item,Integrity,Payment Terms
+Open AP,Finance,Transactional,10,Ensure correct transaction Currency and Amount is maintained for the open items,Completeness,Transaction Currency
+Open AP,Finance,Transactional,11,Check Header Text is limit to char 25 and should not contain any special char [unless approved by business for any specific char presence is valid],Conformity,Header Text
+Open AP,Finance,Transactional,12,Check Line Item Text is limit to char 50 and should not contain any special char [unless approved by business for any specific char presence is valid],Conformity,Line Item Text
+Open AP,Finance,Transactional,13,"Check if payment bank details are maintained for the open items (such as Short Key for a House Bank, ID for Account Details, Partner Bank Type) if applicable",Completeness,Payment Bank
+Open AP,Finance,Transactional,14,"Ensure that the correct Profit Center, Cost Center, Functional Area has been defined for each open item as applicable",Completeness,Assignments
+Open AR ,Finance,Transactional,1,Company Code is mandatory and should not be NULL or blank,Completeness,Company Code
+Open AR ,Finance,Transactional,2,Company Code should be a valid company code and exist in target system,Validity,Company Code
+Open AR ,Finance,Transactional,3,Document Number is mandatory and should not be NULL or blank,Completeness,Document Number
+Open AR ,Finance,Transactional,4,Document Number should limit to char 16 and should not contain any special char,Conformity,Document Number
+Open AR ,Finance,Transactional,5,Check and ensure that the customer exists in the specified Company Code and is active ,Integrity,Customer
+Open AR ,Finance,Transactional,6,Offsetting account for the customer open items (char 80 limit) is mandatory,Completeness,Offsetting Account
+Open AR ,Finance,Transactional,7,Document type is mandatory and cannot be NULL or blank,Completeness,Document Type
+Open AR ,Finance,Transactional,8,Document date is mandatory and cannot be NULL or blank,Completeness,Document Date
+Open AR ,Finance,Transactional,9,Document date should follow the S/4 date format,Conformity,Document Date
+Open AR ,Finance,Transactional,10,"Basic data such as the Alternative Reconciliation Account, special G/L indicator and the header and item details should be provided (as available)",Completeness,Basic Data
+Open AR ,Finance,Transactional,11,"Tax details such as tax code, business place, reporting date should be provided (as available)",Completeness,Tax
+Open AR ,Finance,Transactional,12,"Payment details such as the payment terms, baseline date, payment method, payment block should be provided (if available)",Completeness,Payment
+Open AR ,Finance,Transactional,13,Ensure that the correct Profit Center has been defined for each open item,Completeness,Profit Center
+Open AR ,Finance,Transactional,14,Check the swift code exist. Many North American and European countries mandate a SWIFT code in the payment instruction for making a Wire payment in those countries.,Completeness,Swift Code
+Open Purchase Order,MM - Material Management,Transactional,1,Legacy Purchasing Document number should exist ,Completeness,Legacy Purchasing Document Number
+Open Purchase Order,MM - Material Management,Transactional,2,Legacy Purchasing Document should limit to char 80 and should not contain any special char,Conformity,Legacy Purchasing Document Number
+Open Purchase Order,MM - Material Management,Transactional,3,Legacy Purchasing Document Number should be unique for each record,Uniqueness,Legacy Purchasing Document Number
+Open Purchase Order,MM - Material Management,Transactional,4,Company Code should exist,Completeness,Company Code
+Open Purchase Order,MM - Material Management,Transactional,5,Company Code should be an active company code,Integrity,Company Code
+Open Purchase Order,MM - Material Management,Transactional,6,Purchasing Document Type should exist ,Completeness,Purchasing Document Type
+Open Purchase Order,MM - Material Management,Transactional,7,Supplier Account Number should exist,Completeness,Supplier Account Number
+Open Purchase Order,MM - Material Management,Transactional,8,Supplier should be an active supplier,Integrity,Supplier Account Number
+Open Purchase Order,MM - Material Management,Transactional,9,Purchasing Organization should exist,Completeness,Purchasing Organization  
+Open Purchase Order,MM - Material Management,Transactional,10,Purchasing Organization should be active,Integrity,Purchasing Organization
+Open Purchase Order,MM - Material Management,Transactional,11,Currency Key(ISO format) should exist ,Completeness,Currency Key(ISO format)
+Open Purchase Order,MM - Material Management,Transactional,12,"Check if valid payment term value is populated. 	Payment terms are the arrangements made with a business partner for financial settlement with respect to goods supplied and services performed.",Validity,Payment Term
+Open Purchase Order,MM - Material Management,Transactional,13,Incoterms details recommended to be populated if there are any terms of sale and the passing of risks for import and export of merchandise,Completeness,Incoterms
+Open Purchase Order,MM - Material Management,Transactional,14,"As the incoterm location is free text (limit 70 char), ensure it is maintained correctly when assigning the location, i.e. regarding spaces etc.",Conformity,Incoterms Location 
+Open Purchase Order,MM - Material Management,Transactional,15,Item Number of Purchasing Document should exist ,Completeness,Item Number
+Open Purchase Order,MM - Material Management,Transactional,16,Check if the Legacy PO Item Number is in the valid number format and length is within 5 characters limit,Conformity,Item Number
+Open Purchase Order,MM - Material Management,Transactional,17,Check if Material/Product number is available for all lines,Completeness,Material Number
+Open Purchase Order,MM - Material Management,Transactional,18,Check if Plant column has a value for each PO line item,Completeness,Plant Number
+Open Purchase Order,MM - Material Management,Transactional,19,Check if Unit of measure value is available for all PO line items,Completeness,Unit of Measure
+Open Purchase Order,MM - Material Management,Transactional,20,Check if material/product group value is available for all PO line items,Completeness,Material Group
+Open Purchase Order,MM - Material Management,Transactional,21,Check if Net Price is available for all PO line items,Completeness,Net Price
+Open Purchase Order,MM - Material Management,Transactional,22,"Check if Price unit value is available for all PO line items, it should not be blank",Completeness,Price Unit
+Open Purchase Order,MM - Material Management,Transactional,23,Check if Delivery Date is available for all PO line items.,Completeness,Delivery Date
+Open Purchase Order,MM - Material Management,Transactional,24,Check if Delivery date value is in MM.DD.YYYYY format,Conformity,Delivery Date
+Open GL Balances,Finance,Transactional,1,Company Code is mandatory and should exist,Completeness,Company Code
+Open GL Balances,Finance,Transactional,2,Company Code should be valid and configured,Integrity,Company Code
+Open GL Balances,Finance,Transactional,3,Reference Document Number is mandatory and should exist ,Completeness,Reference Document Number
+Open GL Balances,Finance,Transactional,4,Reference Document Number should be limited to 16 characters and should not include special characters [unless approved by business for valid reasons],Conformity,Reference Document Number
+Open GL Balances,Finance,Transactional,5,G/L Account is mandatory and should exist,Completeness,G/L Account
+Open GL Balances,Finance,Transactional,6,G/L Account should be active,Integrity,G/L Account
+Open GL Balances,Finance,Transactional,7,"Every combination of Company Code, Ledger Group, Reference Document Number, Line Item Number, and G/L Account should be unique",Uniqueness,Duplicate Check
+Open GL Balances,Finance,Transactional,8,Offsetting Account is mandatory and should exist,Completeness,Offsetting Account
+Open GL Balances,Finance,Transactional,9,Ensure that the correct Internal Order has been defined for the open items,Completeness,Order Number
+Open GL Balances,Finance,Transactional,10,Document Type is mandatory and should exist,Completeness,Document Type
+Open GL Balances,Finance,Transactional,11,Document Date is mandatory and should exist,Completeness,Document Date
+Open GL Balances,Finance,Transactional,12,Document Date should follow the S/4 date format <<YYYY/MM/DD>>,Integrity,Document Date
+Open GL Balances,Finance,Transactional,13,Ensure that the correct Profit Center has been defined for each open item,Completeness,Profit Center
+Open GL Balances,Finance,Transactional,14,"Currency information regarding Transaction Currency, Company Code Currency, Group Currency, and Freely Defined Currency should be included",Completeness,Currency
+Open GL Balances,Finance,Transactional,15,Ensure that the correct Cost Center has been defined for each open item,Completeness,Cost Center
+Open Sales Order,SD - Sales & Distribution,Transactional,1,Legacy sales document is mandatory and should exist,Completeness,Legacy Sales Document
+Open Sales Order,SD - Sales & Distribution,Transactional,2,Sales document type is required and should not be blank or NULL,Completeness,Sales Document Type
+Open Sales Order,SD - Sales & Distribution,Transactional,3,Sales organization should not be blank or NULL,Completeness,Sales Organization
+Open Sales Order,SD - Sales & Distribution,Transactional,4,Distribution channel should exist,Completeness,Distribution Channel
+Open Sales Order,SD - Sales & Distribution,Transactional,5,Division is required and should exist,Completeness,Division
+Open Sales Order,SD - Sales & Distribution,Transactional,6,Requested delivery date is mandatory and should not be blank or NULL,Completeness,Requested Delivery Date
+Open Sales Order,SD - Sales & Distribution,Transactional,7,Requested delivery date should not be less than today's date,Validity,Requested Delivery Date
+Open Sales Order,SD - Sales & Distribution,Transactional,8,Partner function is required and should exist,Completeness,Partner Function
+Open Sales Order,SD - Sales & Distribution,Transactional,9,Customer number should exist,Completeness,Customer Number
+Open Sales Order,SD - Sales & Distribution,Transactional,10,Customer should be active,Integrity,Customer Number
+Open Sales Order,SD - Sales & Distribution,Transactional,11,Delivery schedule line number is mandatory and should not be blank or NULL,Completeness,Delivery Schedule Line Number
+Open Sales Order,SD - Sales & Distribution,Transactional,12,Order quantity in sales units is required and should exist,Completeness,Order Quantity
+Open Sales Order,SD - Sales & Distribution,Transactional,13,Ensure correct Payment Terms are defined,Completeness,Payment Term
+Open Sales Order,SD - Sales & Distribution,Transactional,14,Ensure correct material number is created in the system and is an active material,Integrity,Material

@@ -1,0 +1,110 @@
+'use client'
+
+import { useState, useEffect } from 'react'
+import AnimatedLeftSidebar from '@/components/AnimatedLeftSidebar'
+import AnimatedRightSidebar from '@/components/AnimatedRightSidebar'
+import AnimatedChatPanel from '@/components/AnimatedChatPanel'
+import { ToastProvider } from '@/components/ui/toast'
+import { v4 as uuidv4 } from 'uuid'
+
+export default function Home() {
+  const [conversations, setConversations] = useState([])
+  const [activeConversationId, setActiveConversationId] = useState(null)
+  const [dbConnection, setDbConnection] = useState(null)
+  const [globalTokenUsage, setGlobalTokenUsage] = useState(null)
+  const [globalProcessingSteps, setGlobalProcessingSteps] = useState([])
+  const [globalActiveTools, setGlobalActiveTools] = useState([])
+  const [tokenUsage, setTokenUsage] = useState(null)
+  const [processingSteps, setProcessingSteps] = useState([])
+  const [activeTools, setActiveTools] = useState([])
+  const [isLeftSidebarCollapsed, setIsLeftSidebarCollapsed] = useState(false)
+
+  // Initialize with a default conversation
+  useEffect(() => {
+    const defaultConversation = {
+      id: uuidv4(),
+      title: 'New Chat',
+      messages: [],
+      createdAt: new Date().toISOString()
+    }
+    setConversations([defaultConversation])
+    setActiveConversationId(defaultConversation.id)
+  }, [])
+
+  const toggleLeftSidebar = () => {
+    setIsLeftSidebarCollapsed(prev => !prev)
+  }
+
+  const createNewChat = () => {
+    const newConversation = {
+      id: uuidv4(),
+      title: 'New Chat',
+      messages: [],
+      createdAt: new Date().toISOString()
+    }
+    setConversations(prev => [newConversation, ...prev])
+    setActiveConversationId(newConversation.id)
+  }
+
+  const updateConversationTitle = (conversationId, title) => {
+    setConversations(prev => 
+      prev.map(conv => 
+        conv.id === conversationId 
+          ? { ...conv, title: title.substring(0, 50) + (title.length > 50 ? '...' : '') }
+          : conv
+      )
+    )
+  }
+
+  const addMessageToConversation = (conversationId, message) => {
+    setConversations(prev => 
+      prev.map(conv => 
+        conv.id === conversationId 
+          ? { ...conv, messages: [...conv.messages, message] }
+          : conv
+      )
+    )
+  }
+
+  const activeConversation = conversations.find(conv => conv.id === activeConversationId)
+
+  return (
+    <ToastProvider>
+      <div className="flex h-screen bg-gradient-to-br from-gray-900 via-black to-gray-800 text-white overflow-hidden">
+        {/* Left Sidebar */}
+        <div className={`transition-all duration-500 ${isLeftSidebarCollapsed ? 'w-16' : 'w-72'} bg-gray-900 border-r border-gray-700`}>
+          <AnimatedLeftSidebar 
+            conversations={conversations}
+            activeConversationId={activeConversationId}
+            onConversationSelect={setActiveConversationId}
+            onNewChat={createNewChat}
+            isCollapsed={isLeftSidebarCollapsed}
+            onToggleCollapse={toggleLeftSidebar}
+          />
+        </div>
+
+        {/* Main Chat Panel */}
+        <div className="flex-1 flex flex-col m-2">
+          <div className="bg-gradient-to-br from-white via-gray-50 to-gray-100 text-black rounded-2xl overflow-hidden shadow-2xl h-full border border-gray-200">
+            <AnimatedChatPanel 
+              conversation={activeConversation}
+              dbConnection={dbConnection}
+              onDbConnectionChange={setDbConnection}
+              onUpdateTitle={updateConversationTitle}
+              onAddMessage={addMessageToConversation}
+            />
+          </div>
+        </div>
+
+        {/* Right Sidebar */}
+        <div className="w-80 bg-gray-900 border-l border-gray-700">
+          <AnimatedRightSidebar 
+            tokenUsage={globalTokenUsage}
+            processingSteps={globalProcessingSteps}
+            activeTools={globalActiveTools}
+          />
+        </div>
+      </div>
+    </ToastProvider>
+  )
+}
