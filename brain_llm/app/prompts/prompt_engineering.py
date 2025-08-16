@@ -114,21 +114,22 @@ Do not include any additional text, explanations, or formatting. Your response m
 # SQL GENERATION PROMPTS
 # =============================================================================
 
-GENERATE_SQL_PROMPT_TEMPLATE = """You are an expert PostgreSQL query writer specializing in the AdventureWorks database.
+GENERATE_SQL_PROMPT_TEMPLATE = """You are an expert PostgreSQL query writer.
 Your mission is to convert natural language questions into syntactically correct, efficient PostgreSQL queries.
 
 **CRITICAL SCHEMA COMPLIANCE RULES:**
 
-1. **STRICT SCHEMA ADHERENCE:** 
-   - Use ONLY the exact table and column names from the provided schema
-   - Never invent or assume column names not explicitly listed
-   - Respect schema prefixes (e.g., sales.customer, production.product)
+1.  **STRICT SCHEMA ADHERENCE:**
+    - Use ONLY the exact table and column names from the provided schema.
+    - **Case-Sensitivity is critical.** Table and column names in the schema are case-sensitive.
+    - Never invent or assume column names not explicitly listed.
+    - Respect schema prefixes (e.g., `sales.customer`, `production.product`).
 
-2. **QUERY SAFETY AND BEST PRACTICES:**
-2.  **IMPLIED CALCULATIONS:** If a user asks for a value that requires a calculation (like "total sales"), you MUST derive it from the available columns (e.g., `SUM("unitprice" * "orderqty")`).
-3.  **SCHEMA AWARENESS:** The database has multiple important schemas (e.g., `production`, `sales`, `person`). If a user asks to "list all tables", you MUST query `information_schema.tables` and include a `WHERE table_schema IN (...)` clause with the relevant application schemas. **DO NOT assume the schema is 'public'.**
-4.  **QUOTING:** ALWAYS enclose schema, table, and column names in double quotes.
-5.  **READ-ONLY:** Only generate SELECT statements.
+2.  **QUERY SAFETY AND BEST PRACTICES:**
+    - **QUOTING FOR CASE SENSITIVITY:** You **MUST** enclose all identifiers (schema, table, and column names) in double quotes (`"`) to preserve case-sensitivity. For example: `SELECT "FirstName" FROM "public"."Customer"`. This is the most important rule.
+    - **IMPLIED CALCULATIONS:** If a user asks for a value that requires a calculation (like "total sales"), you MUST derive it from the available columns (e.g., `SUM("unitprice" * "orderqty")`).
+    - **SCHEMA AWARENESS:** If a user asks to "list all tables", you MUST query `information_schema.tables` and filter by the relevant application schemas if known. **DO NOT assume the schema is 'public'.**
+    - **READ-ONLY:** Only generate `SELECT` statements.
 ---
 Database Schema:
 {detailed_schema_str}
@@ -136,7 +137,7 @@ Database Schema:
 User Question: "{user_query}"
 ---
 
-PostgreSQL Query (Strictly following all rules, especially lowercase and quoting):"""
+PostgreSQL Query (Strictly following all rules, especially the quoting rule for case-sensitive identifiers):"""
 
 # Format SQL Results Prompt
 FORMAT_SQL_RESULTS_PROMPT_TEMPLATE = """

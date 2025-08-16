@@ -18,6 +18,23 @@ export default function Home() {
   const [processingSteps, setProcessingSteps] = useState([])
   const [activeTools, setActiveTools] = useState([])
   const [isLeftSidebarCollapsed, setIsLeftSidebarCollapsed] = useState(false)
+  const [chatConfig, setChatConfig] = useState({
+    user_id: "b521b8a1-0b9d-45e6-991d-1476c5f6fee8",
+    api_key: "AIzaSyBja5P8lEZQ6qYs1SM2ZRXwzm9EgCsERLc",
+    model_name: "gemini-2.0-flash",
+    temperature: 0.2,
+    db_connection_info: {
+      db_host: "localhost",
+      db_port: 5432,
+      db_user: "postgres",
+      db_name: "chinook",
+      db_password: "iamaryan15",
+      db_schema: null
+    },
+    short_term_memory: [
+      "SUMMARY: The table names are case sensitive, use double quotes while generating commands"
+    ]
+  })
 
   // Initialize with a default conversation
   useEffect(() => {
@@ -66,6 +83,21 @@ export default function Home() {
     )
   }
 
+  const updateMessageInConversation = (conversationId, updatedMessage) => {
+    setConversations(prev => 
+      prev.map(conv => 
+        conv.id === conversationId 
+          ? {
+              ...conv,
+              messages: conv.messages.map(msg => 
+                msg.id === updatedMessage.id ? updatedMessage : msg
+              )
+            }
+          : conv
+      )
+    )
+  }
+
   const activeConversation = conversations.find(conv => conv.id === activeConversationId)
 
   return (
@@ -92,6 +124,9 @@ export default function Home() {
               onDbConnectionChange={setDbConnection}
               onUpdateTitle={updateConversationTitle}
               onAddMessage={addMessageToConversation}
+              onUpdateMessage={updateMessageInConversation}
+              config={chatConfig}
+              onConfigChange={setChatConfig}
             />
           </div>
         </div>
@@ -99,6 +134,8 @@ export default function Home() {
         {/* Right Sidebar */}
         <div className="w-80 bg-gray-900 border-l border-gray-700">
           <AnimatedRightSidebar 
+            config={chatConfig}
+            onConfigChange={setChatConfig}
             tokenUsage={globalTokenUsage}
             processingSteps={globalProcessingSteps}
             activeTools={globalActiveTools}

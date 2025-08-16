@@ -45,12 +45,39 @@ export default function AnimatedChatPanel({
   dbConnection, 
   onDbConnectionChange, 
   onUpdateTitle, 
-  onAddMessage
+  onAddMessage,
+  onUpdateMessage,  // Add this prop for updating existing messages
+  config,
+  onConfigChange
 }) {
   const [isLoading, setIsLoading] = useState(false)
   const [tokenUsage, setTokenUsage] = useState(null)
   const [streamingMessage, setStreamingMessage] = useState('')
   const [processingSteps, setProcessingSteps] = useState([])
+  const [chatConfig, setChatConfig] = useState({
+    user_id: "b521b8a1-0b9d-45e6-991d-1476c5f6fee8",
+    api_key: "AIzaSyBja5P8lEZQ6qYs1SM2ZRXwzm9EgCsERLc",
+    model_name: "gemini-2.0-flash",
+    temperature: 0.2,
+    db_connection_info: {
+      db_host: "localhost",
+      db_port: 5432,
+      db_user: "postgres",
+      db_name: "chinook",
+      db_password: "iamaryan15",
+      db_schema: null
+    },
+    short_term_memory: [
+      "SUMMARY: The table names are case sensitive, use double quotes while generating commands"
+    ]
+  })
+
+  // Update local config when prop changes
+  useEffect(() => {
+    if (config && Object.keys(config).length > 0) {
+      setChatConfig(config)
+    }
+  }, [config])
 
   // Animation refs
   const containerRef = useRef(null)
@@ -292,14 +319,38 @@ export default function AnimatedChatPanel({
         await new Promise(resolve => setTimeout(resolve, 500))
       }
 
+      // Prepare chat history in the correct format for backend
+      const chatHistory = conversation.messages.map(msg => ({
+        role: msg.role,
+        content: msg.content
+      }))
+
+      // Add the current user message to chat history
+      chatHistory.push({
+        role: 'user',
+        content: message
+      })
+
+      // Prepare the payload in the exact format expected by backend
+      const payload = {
+        query: message,
+        user_id: chatConfig.user_id,
+        conversation_id: conversation.id,
+        message_id: userMessage.id,
+        chat_history: chatHistory,
+        short_term_memory: chatConfig.short_term_memory,
+        model_name: chatConfig.model_name,
+        temperature: chatConfig.temperature,
+        api_key: chatConfig.api_key,
+        db_connection_info: chatConfig.db_connection_info
+      }
+
+      console.log('Sending payload to backend:', payload)
+
       const response = await fetch('/api/v1/query', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          query: message,
-          conversation_id: conversation.id,
-          db_connection: dbConnection
-        })
+        body: JSON.stringify(payload)
       })
 
       if (!response.ok) {
@@ -318,6 +369,8 @@ export default function AnimatedChatPanel({
       onAddMessage(conversation.id, assistantMessage)
 
       let accumulatedContent = ''
+      let finalResponse = null
+      let currentEventType = ''
       let hasTokenUsage = false
 
       while (true) {
@@ -328,35 +381,100 @@ export default function AnimatedChatPanel({
         const lines = chunk.split('\n')
 
         for (const line of lines) {
+          if (line.startsWith('event: ')) {
+            currentEventType = line.slice(7).trim()
+            continue
+          }
+          
           if (line.startsWith('data: ')) {
             try {
               const data = JSON.parse(line.slice(6))
               
-              if (data.type === 'content') {
-                accumulatedContent += data.content
-                setStreamingMessage(accumulatedContent)
+              // Handle different event types based on the backend's Server-Sent Events format
+              switch (currentEventType) {
+                case 'status_update':
+                  if (data.message) {
+                    setProcessingSteps(prev => [...prev, { id: uuidv4(), step: data.message }])
+                  }
+                  break
                 
-                // Update message with streaming content
-                assistantMessage = {
-                  ...assistantMessage,
-                  content: accumulatedContent
-                }
-                onAddMessage(conversation.id, assistantMessage)
-              } else if (data.type === 'token_usage') {
-                setTokenUsage(data.usage)
-                hasTokenUsage = true
-              } else if (data.type === 'processing_step') {
-                setProcessingSteps(prev => [...prev, { id: uuidv4(), step: data.step }])
+                case 'sql_generated':
+                  if (data.sql) {
+                    console.log('SQL Generated:', data.sql)
+                    setProcessingSteps(prev => [...prev, { id: uuidv4(), step: `SQL: ${data.sql}` }])
+                  }
+                  break
+                
+                case 'structured_response':
+                  if (data.answer_text) {
+                    finalResponse = data
+                    accumulatedContent = data.answer_text
+                    
+                    // Update message with final response including structured data
+                    assistantMessage = {
+                      ...assistantMessage,
+                      content: accumulatedContent,
+                      structuredData: {
+                        strategy_used: data.strategy_used,
+                        table: data.table,
+                        graph: data.graph,
+                        dqRules: data.dqRules,
+                        sql: data.sql
+                      }
+                    }
+                    
+                    setStreamingMessage(accumulatedContent)
+                    
+                    // Update the existing message
+                    if (onUpdateMessage) {
+                      onUpdateMessage(conversation.id, assistantMessage)
+                    }
+                  }
+                  break
+                
+                case 'token_usage':
+                  if (data.token_usage) {
+                    setTokenUsage({
+                      total: data.token_usage.total_token_count,
+                      prompt: data.token_usage.prompt_token_count,
+                      completion: data.token_usage.candidates_token_count,
+                      cost: (data.token_usage.total_token_count * 0.00001).toFixed(6) // Rough estimate
+                    })
+                    hasTokenUsage = true
+                  }
+                  break
+                
+                default:
+                  // Handle old format for backward compatibility
+                  if (data.type === 'content') {
+                    accumulatedContent += data.content
+                    setStreamingMessage(accumulatedContent)
+                    
+                    assistantMessage = {
+                      ...assistantMessage,
+                      content: accumulatedContent
+                    }
+                    
+                    if (onUpdateMessage) {
+                      onUpdateMessage(conversation.id, assistantMessage)
+                    }
+                  } else if (data.type === 'token_usage') {
+                    setTokenUsage(data.usage)
+                    hasTokenUsage = true
+                  } else if (data.type === 'processing_step') {
+                    setProcessingSteps(prev => [...prev, { id: uuidv4(), step: data.step }])
+                  }
+                  break
               }
             } catch (e) {
-              console.error('Error parsing SSE data:', e)
+              console.error('Error parsing SSE data:', e, 'Line:', line)
             }
           }
         }
       }
 
       // Auto-generate title for first message
-      if (conversation.messages.length === 0) {
+      if (conversation.messages.length === 1) { // Only user message exists
         const title = message.length > 50 ? message.substring(0, 50) + '...' : message
         onUpdateTitle(conversation.id, title)
       }
@@ -450,6 +568,19 @@ export default function AnimatedChatPanel({
 
   return (
     <div ref={containerRef} className="flex-1 flex flex-col h-full">
+      {/* Chat Header */}
+      <div className="border-b border-gray-200 p-4 bg-gradient-to-r from-white to-gray-50">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Bot className="w-5 h-5 text-blue-500" />
+            <h2 className="font-semibold text-gray-900">Brain LLM Assistant</h2>
+          </div>
+          <div className="text-sm text-gray-500">
+            Connected to {chatConfig.db_connection_info.db_name}@{chatConfig.db_connection_info.db_host}
+          </div>
+        </div>
+      </div>
+
       {/* Chat Messages */}
       <ScrollArea className="flex-1 p-6" ref={messagesContainerRef}>
         {conversation.messages.length === 0 ? (
