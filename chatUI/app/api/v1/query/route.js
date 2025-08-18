@@ -18,6 +18,7 @@ export async function POST(request) {
       temperature: body.temperature || 0.2,
       api_key: body.api_key || process.env.GEMINI_API_KEY || "AIzaSyBja5P8lEZQ6qYs1SM2ZRXwzm9EgCsERLc",
       db_connection_info: body.db_connection_info || body.db_connection || {
+        db_type: body.db_type || "postgresql", // NEW: Multi-database support - defaults to PostgreSQL for backward compatibility
         db_host: process.env.DEFAULT_DB_HOST || "localhost",
         db_port: parseInt(process.env.DEFAULT_DB_PORT) || 5432,
         db_user: process.env.DEFAULT_DB_USER || "postgres",

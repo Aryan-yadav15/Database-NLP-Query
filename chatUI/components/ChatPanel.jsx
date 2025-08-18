@@ -5,6 +5,7 @@ import { ScrollArea } from '@/components/ui/scroll-area'
 import ChatInput from '@/components/ChatInput'
 import Message from '@/components/Message'
 import TokenTracker from '@/components/TokenTracker'
+import DatabaseSelector from '@/components/DatabaseSelector'
 import { useToast } from '@/components/ui/toast'
 import { v4 as uuidv4 } from 'uuid'
 
@@ -211,6 +212,15 @@ export default function ChatPanel({
     handleSendMessage(prompt.title)
   }
 
+  const handleDatabaseTypeChange = (newDbType) => {
+    // Update the database connection info with new type
+    const updatedConnection = {
+      ...dbConnection,
+      db_type: newDbType
+    }
+    onDbConnectionChange(updatedConnection)
+  }
+
   if (!conversation) {
     return (
       <div className="flex-1 flex items-center justify-center">
@@ -263,6 +273,28 @@ export default function ChatPanel({
       {/* Chat Input */}
       <div className="border-t border-gray-200 p-4 bg-white">
         <div className="max-w-4xl mx-auto">
+          
+          {/* Database Selector */}
+          <div className="mb-3 flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <span className="text-sm text-gray-600">Database:</span>
+              <DatabaseSelector 
+                currentDbType={dbConnection?.db_type || 'postgresql'}
+                onDatabaseTypeChange={handleDatabaseTypeChange}
+              />
+            </div>
+            
+            {/* Processing Steps Indicator */}
+            {processingSteps.length > 0 && (
+              <div className="flex items-center gap-2">
+                <div className="text-xs text-gray-500">
+                  {processingSteps[processingSteps.length - 1]}
+                </div>
+                <div className="animate-spin w-3 h-3 border border-gray-300 border-t-blue-500 rounded-full"></div>
+              </div>
+            )}
+          </div>
+
           <ChatInput
             onSendMessage={handleSendMessage}
             isLoading={isLoading}

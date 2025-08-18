@@ -5,9 +5,10 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, Dialog
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Settings, Database, Key, User } from 'lucide-react'
+import { Settings, Database, Key, User, Server, Cloud, HardDrive, Snowflake } from 'lucide-react'
 
 export default function ConfigurationModal({ 
   config, 
@@ -20,6 +21,7 @@ export default function ConfigurationModal({
     model_name: "gemini-2.0-flash",
     temperature: 0.2,
     db_connection_info: {
+      db_type: "postgresql",        // Added database type support
       db_host: "localhost",
       db_port: 5432,
       db_user: "postgres",
@@ -50,9 +52,39 @@ export default function ConfigurationModal({
       ...prev,
       db_connection_info: {
         ...prev.db_connection_info,
-        [field]: field === 'db_port' ? parseInt(value) || 5432 : value
+        [field]: field === 'db_port' ? parseInt(value) || getDefaultPort(field === 'db_type' ? value : prev.db_connection_info.db_type) : value
       }
     }))
+  }
+
+  // Helper function to get default port based on database type
+  const getDefaultPort = (dbType) => {
+    const portMapping = {
+      postgresql: 5432,
+      mysql: 3306,
+      sqlite: null, // SQLite doesn't use ports
+      snowflake: 443
+    }
+    return portMapping[dbType] || 5432
+  }
+
+  // Helper function to get database type icon
+  const getDatabaseIcon = (dbType) => {
+    const iconMapping = {
+      postgresql: <Server className="w-4 h-4" />,
+      mysql: <Database className="w-4 h-4" />,
+      sqlite: <HardDrive className="w-4 h-4" />,
+      snowflake: <Snowflake className="w-4 h-4" />
+    }
+    return iconMapping[dbType] || <Database className="w-4 h-4" />
+  }
+
+  // Helper function to check if field is required for database type
+  const isFieldRequired = (field, dbType) => {
+    if (dbType === 'sqlite') {
+      return field === 'db_name' // SQLite only needs file path
+    }
+    return ['db_host', 'db_name', 'db_user', 'db_password'].includes(field)
   }
 
   const handleMemoryChange = (index, value) => {
@@ -165,69 +197,174 @@ export default function ConfigurationModal({
           <TabsContent value="database" className="space-y-4">
             <Card>
               <CardHeader>
-                <CardTitle>Database Connection</CardTitle>
+                <CardTitle className="flex items-center gap-2">
+                  {getDatabaseIcon(localConfig.db_connection_info.db_type)}
+                  Multi-Database Connection
+                </CardTitle>
                 <CardDescription>
-                  Configure your PostgreSQL database connection
+                  Configure your database connection - supports PostgreSQL, MySQL, SQLite, and Snowflake
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
+                
+                {/* Database Type Selector */}
+                <div className="space-y-2">
+                  <Label htmlFor="db_type">Database Type</Label>
+                  <Select
+                    value={localConfig.db_connection_info.db_type}
+                    onValueChange={(value) => {
+                      handleDatabaseChange('db_type', value)
+                      // Auto-update port when database type changes
+                      handleDatabaseChange('db_port', getDefaultPort(value))
+                    }}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select database type">
+                        <div className="flex items-center gap-2">
+                          {getDatabaseIcon(localConfig.db_connection_info.db_type)}
+                          <span className="capitalize">{localConfig.db_connection_info.db_type}</span>
+                        </div>
+                      </SelectValue>
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="postgresql">
+                        <div className="flex items-center gap-2">
+                          <Server className="w-4 h-4" />
+                          PostgreSQL
+                        </div>
+                      </SelectItem>
+                      <SelectItem value="mysql">
+                        <div className="flex items-center gap-2">
+                          <Database className="w-4 h-4" />
+                          MySQL
+                        </div>
+                      </SelectItem>
+                      <SelectItem value="sqlite">
+                        <div className="flex items-center gap-2">
+                          <HardDrive className="w-4 h-4" />
+                          SQLite
+                        </div>
+                      </SelectItem>
+                      <SelectItem value="snowflake">
+                        <div className="flex items-center gap-2">
+                          <Snowflake className="w-4 h-4" />
+                          Snowflake
+                        </div>
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {/* Connection Fields - Dynamic based on database type */}
+                {localConfig.db_connection_info.db_type === 'sqlite' ? (
+                  // SQLite specific configuration
                   <div className="space-y-2">
-                    <Label htmlFor="db_host">Host</Label>
+                    <Label htmlFor="db_name">Database File Path</Label>
                     <Input
-                      id="db_host"
-                      value={localConfig.db_connection_info.db_host}
-                      onChange={(e) => handleDatabaseChange('db_host', e.target.value)}
-                      placeholder="localhost"
+                      id="db_name"
+                      value={localConfig.db_connection_info.db_name}
+                      onChange={(e) => handleDatabaseChange('db_name', e.target.value)}
+                      placeholder="/path/to/database.db"
+                      className="font-mono"
                     />
+                    <div className="text-xs text-gray-500">
+                      Specify the full path to your SQLite database file
+                    </div>
                   </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="db_port">Port</Label>
-                    <Input
-                      id="db_port"
-                      type="number"
-                      value={localConfig.db_connection_info.db_port}
-                      onChange={(e) => handleDatabaseChange('db_port', e.target.value)}
-                      placeholder="5432"
-                    />
-                  </div>
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="db_name">Database Name</Label>
-                  <Input
-                    id="db_name"
-                    value={localConfig.db_connection_info.db_name}
-                    onChange={(e) => handleDatabaseChange('db_name', e.target.value)}
-                    placeholder="chinook"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="db_user">Username</Label>
-                  <Input
-                    id="db_user"
-                    value={localConfig.db_connection_info.db_user}
-                    onChange={(e) => handleDatabaseChange('db_user', e.target.value)}
-                    placeholder="postgres"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="db_password">Password</Label>
-                  <Input
-                    id="db_password"
-                    type="password"
-                    value={localConfig.db_connection_info.db_password}
-                    onChange={(e) => handleDatabaseChange('db_password', e.target.value)}
-                    placeholder="Enter database password"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="db_schema">Schema (Optional)</Label>
-                  <Input
-                    id="db_schema"
-                    value={localConfig.db_connection_info.db_schema || ''}
-                    onChange={(e) => handleDatabaseChange('db_schema', e.target.value || null)}
-                    placeholder="Leave empty for default"
-                  />
+                ) : (
+                  // Standard database configuration (PostgreSQL, MySQL, Snowflake)
+                  <>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="db_host">
+                          Host {isFieldRequired('db_host', localConfig.db_connection_info.db_type) && <span className="text-red-500">*</span>}
+                        </Label>
+                        <Input
+                          id="db_host"
+                          value={localConfig.db_connection_info.db_host}
+                          onChange={(e) => handleDatabaseChange('db_host', e.target.value)}
+                          placeholder="localhost"
+                          required={isFieldRequired('db_host', localConfig.db_connection_info.db_type)}
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="db_port">Port</Label>
+                        <Input
+                          id="db_port"
+                          type="number"
+                          value={localConfig.db_connection_info.db_port}
+                          onChange={(e) => handleDatabaseChange('db_port', e.target.value)}
+                          placeholder={getDefaultPort(localConfig.db_connection_info.db_type).toString()}
+                        />
+                      </div>
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <Label htmlFor="db_name">
+                        Database Name {isFieldRequired('db_name', localConfig.db_connection_info.db_type) && <span className="text-red-500">*</span>}
+                      </Label>
+                      <Input
+                        id="db_name"
+                        value={localConfig.db_connection_info.db_name}
+                        onChange={(e) => handleDatabaseChange('db_name', e.target.value)}
+                        placeholder={localConfig.db_connection_info.db_type === 'snowflake' ? 'database_name' : 'database_name'}
+                        required={isFieldRequired('db_name', localConfig.db_connection_info.db_type)}
+                      />
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="db_user">
+                          Username {isFieldRequired('db_user', localConfig.db_connection_info.db_type) && <span className="text-red-500">*</span>}
+                        </Label>
+                        <Input
+                          id="db_user"
+                          value={localConfig.db_connection_info.db_user}
+                          onChange={(e) => handleDatabaseChange('db_user', e.target.value)}
+                          placeholder="username"
+                          required={isFieldRequired('db_user', localConfig.db_connection_info.db_type)}
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="db_password">
+                          Password {isFieldRequired('db_password', localConfig.db_connection_info.db_type) && <span className="text-red-500">*</span>}
+                        </Label>
+                        <Input
+                          id="db_password"
+                          type="password"
+                          value={localConfig.db_connection_info.db_password}
+                          onChange={(e) => handleDatabaseChange('db_password', e.target.value)}
+                          placeholder="password"
+                          required={isFieldRequired('db_password', localConfig.db_connection_info.db_type)}
+                        />
+                      </div>
+                    </div>
+
+                    {localConfig.db_connection_info.db_type === 'snowflake' && (
+                      <div className="space-y-2">
+                        <Label htmlFor="db_schema">Schema (Optional)</Label>
+                        <Input
+                          id="db_schema"
+                          value={localConfig.db_connection_info.db_schema || ''}
+                          onChange={(e) => handleDatabaseChange('db_schema', e.target.value)}
+                          placeholder="schema_name"
+                        />
+                        <div className="text-xs text-gray-500">
+                          Specify a default schema for Snowflake queries
+                        </div>
+                      </div>
+                    )}
+                  </>
+                )}
+
+                {/* Connection Status Indicator */}
+                <div className="flex items-center gap-2 p-3 bg-gray-50 rounded-lg">
+                  <div className="w-2 h-2 bg-gray-400 rounded-full"></div>
+                  <span className="text-sm text-gray-600">
+                    {localConfig.db_connection_info.db_type === 'sqlite' 
+                      ? 'SQLite connection configured' 
+                      : `${localConfig.db_connection_info.db_type.charAt(0).toUpperCase() + localConfig.db_connection_info.db_type.slice(1)} connection configured`}
+                  </span>
                 </div>
               </CardContent>
             </Card>

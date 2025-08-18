@@ -43,6 +43,7 @@ import re
 
 from app.services.llm.base import BaseLLMService
 from app.services.token_tracker import RequestTokenTracker
+from app.services.db.base import BaseDatabaseService
 from app.prompts.prompt_engineering import GENERATE_VISUALIZATION_JSON_PROMPT_TEMPLATE, EXTRACT_ENTITIES_PROMPT_TEMPLATE
 from app.core.config import settings
 
@@ -76,24 +77,50 @@ class VisualizationService:
     - Query result contextualization
     """
     
-    def __init__(self, llm_service: BaseLLMService):
+    def __init__(self, llm_service: BaseLLMService, db_service: Optional[BaseDatabaseService] = None):
         """
-        Initialize the visualization service with an LLM service for entity extraction.
+        Initialize the visualization service with LLM capabilities and optional database service.
         
         Args:
-            llm_service: Language model service for natural language processing
+            llm_service: The language model service for entity extraction and analysis
+            db_service: Optional database service for multi-database support (defaults to None for backward compatibility)
         """
         self.llm_service = llm_service
+        self.db_service = db_service  # Support for multi-database architecture
 
-    def _get_db_connection(self):
-        # Always create a new psycopg2 connection using settings
-        return psycopg2.connect(
-            host=settings.PG_HOST,
-            port=settings.PG_PORT,
-            dbname=settings.PG_DATABASE_AW,
-            user=settings.PG_USER,
-            password=settings.PG_PASSWORD
-        )
+    def _get_db_connection(self, db_connection_info: Optional[Dict[str, Any]] = None):
+        """
+        Get database connection using the new unified service architecture or legacy PostgreSQL.
+        
+        Args:
+            db_connection_info: Optional database connection info for multi-database support
+            
+        Returns:
+            Database connection object
+        """
+        if db_connection_info:
+            # NEW: Use unified database service for multi-database support
+            from app.services.connection_manager import ConnectionManager
+            connection_manager = ConnectionManager()
+            
+            # For visualization service, we need raw connections
+            db_type = db_connection_info.get('db_type', 'postgresql')
+            if db_type.lower() == 'postgresql':
+                # Use existing raw PostgreSQL connection method for backward compatibility
+                return connection_manager.get_raw_psycopg2_connection(db_connection_info)
+            else:
+                # For other database types, use the service-based approach
+                for connection in connection_manager.get_connection_via_service(db_connection_info):
+                    return connection
+        else:
+            # LEGACY: Default PostgreSQL connection for backward compatibility
+            return psycopg2.connect(
+                host=settings.PG_HOST,
+                port=settings.PG_PORT,
+                dbname=settings.PG_DATABASE_AW,
+                user=settings.PG_USER,
+                password=settings.PG_PASSWORD
+            )
 
     async def generate_visualization_json(
         self, 
@@ -101,6 +128,7 @@ class VisualizationService:
         table_names: Optional[List[str]] = None,
         dynamic_llm_service: Optional[BaseLLMService] = None,
         dynamic_db_connection: Optional[psycopg2.extensions.connection] = None,
+        db_connection_info: Optional[Dict[str, Any]] = None,  # NEW: Multi-database support
         provided_schema: Optional[str] = None,
         token_tracker: Optional[RequestTokenTracker] = None,
         model_name: Optional[str] = None
@@ -108,11 +136,20 @@ class VisualizationService:
         """
         Generates a JSON object for graph visualization based on a query.
         This version includes robust parsing to handle imperfect LLM output.
+        
+        Enhanced Multi-Database Support:
+        - db_connection_info: Database connection parameters with db_type field
+        - Supports PostgreSQL, MySQL, SQLite, Snowflake through unified interface
+        - Backward compatible with existing dynamic_db_connection parameter
         """
         try:
             # Use dynamic services if provided, otherwise fall back to defaults
             llm_service_to_use = dynamic_llm_service if dynamic_llm_service else self.llm_service
             db_conn_to_use = dynamic_db_connection if dynamic_db_connection else None
+            
+            # Enhanced connection management with multi-database support
+            should_close_connection = False
+            connection_source = "default"
             
             # Step 1: Get schema and determine target tables
             detailed_schema_str = None
@@ -125,11 +162,21 @@ class VisualizationService:
                 # Use provided dynamic connection to fetch schema
                 logger.info("Fetching schema from dynamic database connection")
                 detailed_schema_str = self.get_detailed_schema(db_conn_to_use)
+                connection_source = "dynamic"
+            elif db_connection_info:
+                # NEW: Use multi-database service connection
+                logger.info(f"Creating {db_connection_info.get('db_type', 'postgresql')} connection for visualization")
+                db_conn_to_use = self._get_db_connection(db_connection_info)
+                detailed_schema_str = self.get_detailed_schema(db_conn_to_use)
+                should_close_connection = True
+                connection_source = "service"
             else:
                 # Use default connection (fallback)
                 logger.info("Using default database connection to fetch schema")
-                with self._get_db_connection() as db_conn:
-                    detailed_schema_str = self.get_detailed_schema(db_conn)
+                db_conn_to_use = self._get_db_connection()
+                detailed_schema_str = self.get_detailed_schema(db_conn_to_use)
+                should_close_connection = True
+                connection_source = "legacy"
             
             # Continue with target table determination
             target_tables = []
@@ -145,8 +192,14 @@ class VisualizationService:
                     logger.info("Entity extraction failed or returned invalid, using all tables fallback.")
                     # Need a connection for fallback table selection
                     fallback_conn = db_conn_to_use if db_conn_to_use else None
+                    fallback_should_close = False
+                    
                     if not fallback_conn:
-                        fallback_conn = self._get_db_connection().__enter__()
+                        if db_connection_info:
+                            fallback_conn = self._get_db_connection(db_connection_info)
+                        else:
+                            fallback_conn = self._get_db_connection()
+                        fallback_should_close = True
                     try:
                         target_tables = await asyncio.to_thread(self.get_top_n_central_tables, fallback_conn, 50)
                     finally:
@@ -240,14 +293,18 @@ class VisualizationService:
                 json_string = json_string.replace('\\"', '"')
                 json_string = re.sub(r',(\s*[}\]])', r'\1', json_string)
                 visualization_data = json.loads(json_string)
-            return {
+            
+            # Successful completion - return visualization data
+            result = {
                 "answer_text": "Here's a visualization of the database schema you requested.",
-                    "strategy_used": "VISUALIZE",
-                    "retrieved_sources": [],
-                    "generated_sql_logged": None,
-                    "visualization_data": visualization_data,
-                    "table_data": None
-                }
+                "strategy_used": "VISUALIZE",
+                "retrieved_sources": [],
+                "generated_sql_logged": None,
+                "visualization_data": visualization_data,
+                "table_data": None
+            }
+            
+            return result
         except (json.JSONDecodeError, ValueError) as e:
             error_msg = str(e)
             logger.error(f"Failed to generate or parse visualization JSON: {error_msg}\nLLM output (first 500 chars): {response_text[:500] if 'response_text' in locals() else ''}", exc_info=True)
@@ -270,6 +327,15 @@ class VisualizationService:
                 "visualization_data": {"graph": {"nodes": [], "edges": []}},
                 "table_data": None
             }
+        finally:
+            # Clean up database connections
+            if should_close_connection and db_conn_to_use and connection_source in ["service", "legacy"]:
+                try:
+                    if hasattr(db_conn_to_use, 'close'):
+                        db_conn_to_use.close()
+                        logger.info(f"Closed {connection_source} database connection")
+                except Exception as cleanup_e:
+                    logger.warning(f"Error closing database connection: {cleanup_e}")
 
     def get_schema_for_tables(self, db_conn, table_names: List[str]) -> str:
         """

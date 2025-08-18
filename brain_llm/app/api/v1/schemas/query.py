@@ -44,11 +44,16 @@ class QueryRequest(BaseModel):
     The flexible design accommodates different client needs while maintaining
     type safety and validation.
     
+    Enhanced Multi-Database Support:
+    - db_type field in db_connection_info enables multi-database connectivity
+    - Supports PostgreSQL, MySQL, SQLite, Snowflake through unified interface
+    - Backward compatible with existing PostgreSQL-only requests
+    
     Core Features:
     - Natural language query processing with context awareness
     - Multi-modal responses (text, tables, visualizations)
     - Conversation history and memory management
-    - Dynamic database connection support
+    - Dynamic database connection support with multi-database types
     - Model and parameter customization per request
     
     Attributes:
@@ -61,13 +66,24 @@ class QueryRequest(BaseModel):
         message_id: Individual message identifier for tracking
         chat_history: Previous conversation turns for context
         short_term_memory: Recent relevant information for context
-        db_connection_info: Custom database connection parameters
+        db_connection_info: Database connection parameters with optional db_type
+        
+    Database Connection Info Format:
+        {
+            "db_type": "postgresql",  # NEW: Database type (postgresql, mysql, sqlite, snowflake)
+            "db_host": "localhost",
+            "db_port": 5432,
+            "db_name": "database",
+            "db_user": "username",
+            "db_password": "password",
+            "db_schema": null  # Optional: Pre-provided schema to bypass fetching
+        }
         
     Validation:
         - query_text: Required, non-empty string
         - temperature: Must be between 0.0 and 1.0 if provided
         - chat_history: List of role/content message pairs
-        - db_connection_info: Can include schema bypass for performance
+        - db_connection_info: Validates database type if provided
     """
     query_text: str                                            # Required: User's natural language query
     model_name: Optional[str] = None                          # Optional: LLM model override
@@ -78,7 +94,48 @@ class QueryRequest(BaseModel):
     message_id: Optional[str] = None                         # Optional: Individual message tracking
     chat_history: Optional[List[Dict[str, str]]] = None      # Optional: Previous conversation context
     short_term_memory: Optional[List[str]] = None            # Optional: Recent context information
-    db_connection_info: Optional[Dict[str, Any]] = None      # Optional: Custom DB connection settings
+    db_connection_info: Optional[Dict[str, Any]] = None      # Optional: Custom DB connection with db_type
+    
+    @field_validator('db_connection_info')
+    @classmethod
+    def validate_db_connection_info(cls, v):
+        """
+        Custom validator for database connection information.
+        
+        Validates that db_type field, if provided, contains a supported database type.
+        Also ensures required connection fields are present for valid connections.
+        
+        Args:
+            v: Database connection info dictionary
+            
+        Returns:
+            dict: Validated connection info
+            
+        Raises:
+            ValueError: If db_type is invalid or required fields are missing
+        """
+        if v is None:
+            return v
+        
+        # Validate db_type if provided
+        if 'db_type' in v:
+            supported_types = ['postgresql', 'mysql', 'sqlite', 'snowflake']
+            db_type = v['db_type'].lower()
+            if db_type not in supported_types:
+                raise ValueError(f"Unsupported database type '{db_type}'. Supported types: {', '.join(supported_types)}")
+            v['db_type'] = db_type  # Normalize to lowercase
+        else:
+            # Default to PostgreSQL for backward compatibility
+            v['db_type'] = 'postgresql'
+        
+        # Validate required fields for non-SQLite databases
+        if v.get('db_type') != 'sqlite':
+            required_fields = ['db_host', 'db_port', 'db_name', 'db_user', 'db_password']
+            missing_fields = [field for field in required_fields if field not in v or v[field] is None]
+            if missing_fields:
+                raise ValueError(f"Missing required database connection fields: {', '.join(missing_fields)}")
+        
+        return v
 
 
 # =============================================================================

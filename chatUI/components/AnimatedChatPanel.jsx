@@ -8,6 +8,7 @@ import { v4 as uuidv4 } from 'uuid'
 import AnimatedMessage from './AnimatedMessage'
 import AnimatedChatInput from './AnimatedChatInput'
 import AnimatedTokenTracker from './AnimatedTokenTracker'
+import DatabaseSelector from './DatabaseSelector'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { useToast } from '@/components/ui/toast'
 import { Sparkles, Bot, User, Wand2 } from 'lucide-react'
@@ -519,6 +520,15 @@ export default function AnimatedChatPanel({
     }
   }
 
+  const handleDatabaseTypeChange = (newDbType) => {
+    // Update the database connection info with new type
+    const updatedConnection = {
+      ...dbConnection,
+      db_type: newDbType
+    }
+    onDbConnectionChange(updatedConnection)
+  }
+
   // Initialize animations
   useEffect(() => {
     if (typeof window === 'undefined') return
@@ -600,6 +610,17 @@ export default function AnimatedChatPanel({
               <p className="text-gray-500 text-sm">Choose a prompt below or write your own to start chatting with Lumina.</p>
             </div>
 
+            {/* Database Selector on Welcome Screen */}
+            <div className="mb-6 flex items-center justify-center">
+              <div className="flex items-center gap-2 bg-white px-4 py-2 rounded-lg border border-gray-200 shadow-sm">
+                <span className="text-sm text-gray-600">Database:</span>
+                <DatabaseSelector 
+                  currentDbType={dbConnection?.db_type || 'postgresql'}
+                  onDatabaseTypeChange={handleDatabaseTypeChange}
+                />
+              </div>
+            </div>
+
             <div className="grid grid-cols-2 gap-2.5 w-full max-w-xl relative z-10">
               {SUGGESTED_PROMPTS.map((prompt, index) => (
                 <div
@@ -626,6 +647,17 @@ export default function AnimatedChatPanel({
           </div>
         ) : (
           <div className="max-w-4xl mx-auto space-y-6">
+            {/* Database Selector */}
+            <div className="mb-3 flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <span className="text-sm text-gray-600">Database:</span>
+                <DatabaseSelector 
+                  currentDbType={dbConnection?.db_type || 'postgresql'}
+                  onDatabaseTypeChange={handleDatabaseTypeChange}
+                />
+              </div>
+            </div>
+            
             {conversation.messages.map((message, index) => (
               <div
                 key={message.id}

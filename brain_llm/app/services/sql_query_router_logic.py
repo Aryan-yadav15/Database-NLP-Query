@@ -281,20 +281,129 @@ def generate_sql_via_llm(
     return None
 
 
-def execute_sql_query_pg(pg_conn: psycopg2.extensions.connection, sql_query: str) -> Tuple[Optional[pd.DataFrame], Optional[str]]:
-    # ... (initial checks) ...
+def execute_sql_query_unified(db_connection_info: Dict[str, Any], sql_query: str) -> Tuple[Optional[pd.DataFrame], Optional[str]]:
+    """
+    Unified SQL query execution function that supports multiple database types.
+    
+    This function replaces the PostgreSQL-specific execute_sql_query_pg function
+    and provides a unified interface for executing SQL queries across different
+    database types using the new database service architecture.
+    
+    Args:
+        db_connection_info: Database connection information including db_type
+        sql_query: SQL query string to execute
+        
+    Returns:
+        Tuple containing:
+        - pd.DataFrame: Query results as DataFrame (None if error)
+        - str: Error message (None if successful)
+        
+    Example:
+        db_info = {
+            "db_type": "postgresql",
+            "db_host": "localhost",
+            "db_port": 5432,
+            "db_name": "test",
+            "db_user": "user",
+            "db_password": "password"
+        }
+        df, error = execute_sql_query_unified(db_info, "SELECT * FROM customers")
+    """
+    logger.info(f"Executing SQL query using unified database service: {sql_query}")
+    
+    try:
+        # Import here to avoid circular imports
+        from app.services.connection_manager import ConnectionManager
+        
+        # Initialize connection manager
+        connection_manager = ConnectionManager()
+        
+        # Get database service for the specified type
+        db_type = db_connection_info.get('db_type', 'postgresql')
+        db_service = connection_manager.get_database_service(db_type)
+        
+        # Get connection using the service
+        for connection in connection_manager.get_connection_via_service(db_connection_info):
+            # Execute query using database service
+            result = db_service.execute_query(connection, sql_query)
+            
+            if not result.success:
+                error_msg = f"Database query execution failed: {result.error_message}"
+                logger.error(error_msg)
+                return None, error_msg
+            
+            # Convert QueryResult to DataFrame for backward compatibility
+            if result.data:
+                df = pd.DataFrame(result.data)
+                
+                # Detailed DataFrame debugging (preserved from original)
+                logger.info(f"--- Unified SQL Execution DataFrame Debug ---")
+                logger.info(f"DataFrame shape: {df.shape}")
+                logger.info(f"DataFrame columns: {df.columns.tolist()}")
+                logger.info(f"DataFrame dtypes:\n{df.dtypes.to_string()}")
+                
+                if not df.empty:
+                    logger.info(f"DataFrame head (raw data):\n{df.head().to_string()}")
+                    # Log first value for debugging (preserved behavior)
+                    if len(df.columns) > 0:
+                        first_col = df.columns[0]
+                        first_row_value = df.iloc[0][first_col]
+                        logger.info(f"Value in '{first_col}' column for first row: {repr(first_row_value)}")
+                        logger.info(f"Type of value in '{first_col}' column for first row: {type(first_row_value)}")
+                else:
+                    logger.info("DataFrame is empty.")
+                logger.info(f"--- End Unified SQL Execution DataFrame Debug ---")
+                
+                logger.info(f"Query executed successfully. Rows: {result.row_count}, Time: {result.execution_time:.3f}s")
+                return df, None
+            else:
+                # No data returned (e.g., INSERT/UPDATE/DELETE)
+                if result.row_count is not None and result.row_count > 0:
+                    logger.info(f"Query executed successfully but returned no data. Affected rows: {result.row_count}")
+                    # Create empty DataFrame with message
+                    df = pd.DataFrame()
+                    return df, f"Query executed successfully. {result.row_count} rows affected."
+                else:
+                    logger.info("Query executed successfully but returned no results.")
+                    df = pd.DataFrame()
+                    return df, "The query executed successfully but returned no results."
+                    
+    except Exception as e:
+        error_msg = f"Error during unified SQL execution: {e}"
+        logger.error(error_msg, exc_info=True)
+        return None, error_msg
+
+
+def execute_sql_query_pg(pg_conn, sql_query: str) -> Tuple[Optional[pd.DataFrame], Optional[str]]:
+    """
+    DEPRECATED: Legacy PostgreSQL-specific query execution function.
+    
+    This function is preserved for backward compatibility but should be replaced
+    with execute_sql_query_unified() for new code. It will be removed in a future version.
+    
+    Args:
+        pg_conn: PostgreSQL connection (psycopg2.extensions.connection)
+        sql_query: SQL query string to execute
+        
+    Returns:
+        Tuple containing DataFrame and error message (same as original)
+        
+    Migration Guide:
+        Old: execute_sql_query_pg(pg_conn, sql_query)
+        New: execute_sql_query_unified(db_connection_info, sql_query)
+    """
+    logger.warning("Using deprecated execute_sql_query_pg function. Please migrate to execute_sql_query_unified().")
+    
+    # Original implementation preserved for backward compatibility
     logger.info(f"Executing SQL with psycopg2 cursor: {sql_query}")
     cursor = None
     try:
         cursor = pg_conn.cursor()
         cursor.execute(sql_query)
         
-        if cursor.description is None: # No results, or not a SELECT query that returns rows
+        if cursor.description is None:
             logger.info("Query executed (psycopg2), but cursor has no description (no rows returned or not a SELECT).")
-            # Create an empty DataFrame with expected columns if possible, or handle as no data
-            # For this specific query, we expect 'standardcost'
-            # If SQL was SELECT "standardcost" ..., col_name_from_sql = "standardcost"
-            col_name_from_sql = sql_query.split(' ')[1].strip('"') # very naive way to get selected col
+            col_name_from_sql = sql_query.split(' ')[1].strip('"') if len(sql_query.split()) > 1 else "result"
             df = pd.DataFrame(columns=[col_name_from_sql])
             return df, "The query executed successfully but returned no results."
 
@@ -305,20 +414,18 @@ def execute_sql_query_pg(pg_conn: psycopg2.extensions.connection, sql_query: str
         logger.info(f"PSYCOPG2 DEBUG: Fetched {len(rows)} rows.")
 
         if not rows:
-            df = pd.DataFrame(columns=colnames) # Empty df with correct columns
+            df = pd.DataFrame(columns=colnames)
             logger.info("Query executed successfully (psycopg2), but returned no rows.")
             return df, "The query executed successfully but returned no results."
 
-        for i, row_tuple in enumerate(rows[:5]): # Log first few rows
+        for i, row_tuple in enumerate(rows[:5]):
             logger.info(f"PSYCOPG2 DEBUG: Row {i} data: {row_tuple}")
             if colnames and len(row_tuple) == len(colnames) and colnames[0] == 'standardcost':
                 logger.info(f"PSYCOPG2 DEBUG: Value for 'standardcost' in row {i}: {repr(row_tuple[0])}")
                 logger.info(f"PSYCOPG2 DEBUG: Type of value for 'standardcost' in row {i}: {type(row_tuple[0])}")
 
-
         df = pd.DataFrame(rows, columns=colnames)
         
-        # --- DETAILED DATAFRAME DEBUGGING (After manual creation) ---
         logger.info(f"--- API SQL EXEC DataFrame Debug (from psycopg2 cursor) ---")
         logger.info(f"DataFrame shape: {df.shape}")
         logger.info(f"DataFrame columns: {df.columns.tolist()}")
@@ -336,16 +443,13 @@ def execute_sql_query_pg(pg_conn: psycopg2.extensions.connection, sql_query: str
         else:
             logger.info("DataFrame is empty.")
         logger.info(f"--- End API SQL EXEC DataFrame Debug (from psycopg2 cursor) ---")
-        # --- END DETAILED DATAFRAME DEBUGGING ---
 
         return df, None
     except psycopg2.Error as e:
-        # ... (your error handling) ...
         error_msg = f"PostgreSQL error during query execution (psycopg2): {e}"
         logger.error(error_msg, exc_info=True)
         return None, error_msg
     except Exception as e:
-        # ... (your error handling) ...
         error_msg = f"An unexpected error occurred during SQL execution (psycopg2): {e}"
         logger.error(error_msg, exc_info=True)
         return None, error_msg

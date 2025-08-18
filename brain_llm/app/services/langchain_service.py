@@ -61,7 +61,7 @@ from app.db.pg_connector import get_adventureworks_db_session
 
 # SQL processing utilities
 from .sql_query_router_logic import (
-    generate_sql_via_llm, execute_sql_query_pg, format_sql_results_via_llm,
+    generate_sql_via_llm, execute_sql_query_pg, execute_sql_query_unified, format_sql_results_via_llm,
     generate_sql_and_entities_for_dq_rule_sync
 )
 
@@ -535,15 +535,27 @@ Generate ONLY the SQL query without any explanation or markdown formatting. The 
             # STAGE 3: QUERY EXECUTION WITH CONNECTION MANAGEMENT
             # =================================================================
             try:
-                # Execute the query on the same connection we used for schema
-                results_df, error_msg = await asyncio.to_thread(execute_sql_query_pg, pg_conn, sql_query)
+                # NEW: Use unified database query execution that supports multiple database types
+                if self.current_db_connection_info:
+                    # Dynamic connection - use the unified method with connection info
+                    results_df, error_msg = await asyncio.to_thread(
+                        execute_sql_query_unified, 
+                        self.current_db_connection_info, 
+                        sql_query
+                    )
+                    logger.info("Executed query using unified database service with dynamic connection")
+                else:
+                    # Default connection - fallback to legacy method for backward compatibility
+                    results_df, error_msg = await asyncio.to_thread(execute_sql_query_pg, pg_conn, sql_query)
+                    logger.info("Executed query using legacy PostgreSQL method with default connection")
+                
                 if error_msg: 
                     raise ConnectionError(f"DB error: {error_msg}")
             finally:
                 # Ensure proper connection cleanup to prevent resource leaks
                 if self.current_db_connection_info:
-                    # Dynamic connection - close it manually
-                    if pg_conn:
+                    # Dynamic connection - close it manually (only if using legacy method)
+                    if pg_conn and 'pg_conn' in locals():
                         pg_conn.close()
                         logger.info("Dynamic database connection closed")
                 else:

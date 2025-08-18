@@ -24,6 +24,7 @@ export default function Home() {
     model_name: "gemini-2.0-flash",
     temperature: 0.2,
     db_connection_info: {
+      db_type: "postgresql",      // Add database type
       db_host: "localhost",
       db_port: 5432,
       db_user: "postgres",
@@ -36,7 +37,7 @@ export default function Home() {
     ]
   })
 
-  // Initialize with a default conversation
+  // Initialize with a default conversation and database connection
   useEffect(() => {
     const defaultConversation = {
       id: uuidv4(),
@@ -46,6 +47,9 @@ export default function Home() {
     }
     setConversations([defaultConversation])
     setActiveConversationId(defaultConversation.id)
+    
+    // Initialize database connection from config
+    setDbConnection(chatConfig.db_connection_info)
   }, [])
 
   const toggleLeftSidebar = () => {
