@@ -527,5 +527,3 @@ CORS_ORIGINS=https://yourdomain.com
 **Repository:** [GitHub](https://github.com/company/brain-llm)
 
 ---
-
-*© 2025 Deloitte. All rights reserved. Brain LLM is a proprietary enterprise solution.*
