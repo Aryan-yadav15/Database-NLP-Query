@@ -46,6 +46,7 @@ export default function AnimatedRightSidebar({
     model_name: "gemini-2.0-flash",
     temperature: 0.2,
     db_connection_info: {
+      db_type: "postgresql",
       db_host: "localhost",
       db_port: 5432,
       db_user: "postgres",
@@ -57,6 +58,19 @@ export default function AnimatedRightSidebar({
       "SUMMARY: The table names are case sensitive, use double quotes while generating commands"
     ]
   })
+
+  // Database type configuration
+  const getDatabaseInfo = (dbType) => {
+    const dbConfig = {
+      postgresql: { name: 'PostgreSQL', defaultPort: 5432, color: 'text-blue-400' },
+      mysql: { name: 'MySQL', defaultPort: 3306, color: 'text-orange-400' },
+      sqlite: { name: 'SQLite', defaultPort: null, color: 'text-green-400' },
+      snowflake: { name: 'Snowflake', defaultPort: 443, color: 'text-cyan-400' }
+    }
+    return dbConfig[dbType] || dbConfig.postgresql
+  }
+
+  const currentDbInfo = getDatabaseInfo(localConfig.db_connection_info.db_type)
 
   const [expandedSections, setExpandedSections] = useState({
     apiConfig: true,
@@ -335,6 +349,9 @@ export default function AnimatedRightSidebar({
               <div className="flex items-center gap-2">
                 <Database className="w-4 h-4 text-green-400" />
                 <span className="text-sm font-medium text-white">Database Connection</span>
+                <span className={`text-xs px-2 py-1 rounded-full bg-gray-700 ${currentDbInfo.color}`}>
+                  {currentDbInfo.name}
+                </span>
               </div>
               {expandedSections.database ? 
                 <ChevronDown className="w-4 h-4 text-gray-400" /> : 
@@ -351,16 +368,18 @@ export default function AnimatedRightSidebar({
                       onChange={(e) => handleConfigChange('db_connection_info.db_host', e.target.value)}
                       className="mt-1 bg-gray-700 border-gray-600 text-white text-xs"
                       placeholder="localhost"
+                      disabled={localConfig.db_connection_info.db_type === 'sqlite'}
                     />
                   </div>
                   <div>
                     <Label className="text-xs text-gray-400">Port</Label>
                     <Input
                       type="number"
-                      value={localConfig.db_connection_info.db_port}
+                      value={localConfig.db_connection_info.db_port || ''}
                       onChange={(e) => handleConfigChange('db_connection_info.db_port', e.target.value)}
                       className="mt-1 bg-gray-700 border-gray-600 text-white text-xs"
-                      placeholder="5432"
+                      placeholder={currentDbInfo.defaultPort?.toString() || 'N/A'}
+                      disabled={localConfig.db_connection_info.db_type === 'sqlite'}
                     />
                   </div>
                 </div>
@@ -371,7 +390,7 @@ export default function AnimatedRightSidebar({
                     value={localConfig.db_connection_info.db_name}
                     onChange={(e) => handleConfigChange('db_connection_info.db_name', e.target.value)}
                     className="mt-1 bg-gray-700 border-gray-600 text-white text-xs"
-                    placeholder="chinook"
+                    placeholder={localConfig.db_connection_info.db_type === 'sqlite' ? 'database.db' : 'chinook'}
                   />
                 </div>
 
@@ -381,7 +400,8 @@ export default function AnimatedRightSidebar({
                     value={localConfig.db_connection_info.db_user}
                     onChange={(e) => handleConfigChange('db_connection_info.db_user', e.target.value)}
                     className="mt-1 bg-gray-700 border-gray-600 text-white text-xs"
-                    placeholder="postgres"
+                    placeholder={localConfig.db_connection_info.db_type === 'mysql' ? 'root' : 'postgres'}
+                    disabled={localConfig.db_connection_info.db_type === 'sqlite'}
                   />
                 </div>
 
@@ -394,14 +414,17 @@ export default function AnimatedRightSidebar({
                       onChange={(e) => handleConfigChange('db_connection_info.db_password', e.target.value)}
                       className="bg-gray-700 border-gray-600 text-white text-xs pr-8"
                       placeholder="Enter database password"
+                      disabled={localConfig.db_connection_info.db_type === 'sqlite'}
                     />
-                    <button
-                      type="button"
-                      onClick={() => togglePasswordVisibility('db_password')}
-                      className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-white"
-                    >
-                      {showPasswords.db_password ? <EyeOff className="w-3 h-3" /> : <Eye className="w-3 h-3" />}
-                    </button>
+                    {localConfig.db_connection_info.db_type !== 'sqlite' && (
+                      <button
+                        type="button"
+                        onClick={() => togglePasswordVisibility('db_password')}
+                        className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-white"
+                      >
+                        {showPasswords.db_password ? <EyeOff className="w-3 h-3" /> : <Eye className="w-3 h-3" />}
+                      </button>
+                    )}
                   </div>
                 </div>
 

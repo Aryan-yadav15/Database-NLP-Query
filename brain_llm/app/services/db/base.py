@@ -305,6 +305,118 @@ class BaseDatabaseService(ABC):
         """
         pass
     
+    def test_connection(self, **kwargs) -> Dict[str, Any]:
+        """
+        Test database connection and return detailed information.
+        
+        This method provides a higher-level interface for connection testing
+        that returns structured information suitable for API responses.
+        
+        Args:
+            **kwargs: Database connection parameters (varies by database type)
+            
+        Returns:
+            Dict containing connection test results:
+            {
+                "success": bool,
+                "error": Optional[str],
+                "version": Optional[str],
+                "tables_count": Optional[int],
+                "connection_info": Optional[Dict]
+            }
+        """
+        try:
+            # Build connection info from kwargs
+            connection_info = self._build_connection_info_from_kwargs(**kwargs)
+            
+            # Validate connection
+            is_valid, error_message = self.validate_connection(connection_info)
+            
+            if not is_valid:
+                return {
+                    "success": False,
+                    "error": error_message
+                }
+            
+            # Get additional connection details
+            with self.get_connection(connection_info) as conn:
+                try:
+                    tables = self.get_table_names(conn)
+                    version_info = self._get_database_version(conn)
+                    
+                    return {
+                        "success": True,
+                        "version": version_info,
+                        "tables_count": len(tables),
+                        "connection_info": {
+                            "database_type": self.get_database_type(),
+                            "host": getattr(connection_info, 'db_host', None),
+                            "database": connection_info.db_name,
+                            "schema": getattr(connection_info, 'db_schema', None)
+                        }
+                    }
+                except Exception as e:
+                    # Connection works but schema introspection failed
+                    return {
+                        "success": True,
+                        "error": f"Connected but schema access failed: {str(e)}",
+                        "connection_info": {
+                            "database_type": self.get_database_type(),
+                            "host": getattr(connection_info, 'db_host', None),
+                            "database": connection_info.db_name
+                        }
+                    }
+                    
+        except Exception as e:
+            return {
+                "success": False,
+                "error": str(e)
+            }
+    
+    def _build_connection_info_from_kwargs(self, **kwargs) -> ConnectionInfo:
+        """
+        Build ConnectionInfo from keyword arguments.
+        
+        This method handles the conversion from API parameters to the
+        standardized ConnectionInfo structure, with database-specific
+        parameter mapping.
+        """
+        # Default values
+        connection_params = {
+            'db_type': self.get_database_type(),
+            'db_host': kwargs.get('host', 'localhost'),
+            'db_port': kwargs.get('port', 5432),
+            'db_name': kwargs.get('database', ''),
+            'db_user': kwargs.get('username', ''),
+            'db_password': kwargs.get('password', ''),
+            'db_schema': kwargs.get('schema', None),
+            'additional_params': {}
+        }
+        
+        # Handle database-specific parameters
+        if 'account' in kwargs:  # Snowflake
+            connection_params['additional_params']['account'] = kwargs['account']
+        if 'warehouse' in kwargs:  # Snowflake
+            connection_params['additional_params']['warehouse'] = kwargs['warehouse']
+            
+        return ConnectionInfo(**connection_params)
+    
+    def _get_database_version(self, connection: Any) -> Optional[str]:
+        """
+        Get database version information.
+        
+        This method should be overridden by concrete implementations
+        to provide database-specific version queries.
+        """
+        try:
+            # Default SQL that works for most databases
+            result = self.execute_query(connection, "SELECT VERSION()")
+            if result.success and result.data:
+                return result.data[0].get('version', 'Unknown')
+        except:
+            pass
+        return None
+    
     # =============================================================================
     # SCHEMA INTROSPECTION METHODS
     # =============================================================================

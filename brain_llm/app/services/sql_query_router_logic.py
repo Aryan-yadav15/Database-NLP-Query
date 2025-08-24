@@ -31,6 +31,7 @@ Author: Brain LLM Team
 import asyncio
 import pandas as pd
 import psycopg2
+import psycopg2.extras  # For DictCursor
 import logging
 import json
 import re
@@ -102,7 +103,7 @@ def get_detailed_database_schema_string(conn) -> str:
     schema_string_parts = ["Database Schema Description:"]
     cursor = None
     try:
-        cursor = conn.cursor()
+        cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
         # Get all tables from user-defined schemas - excludes PostgreSQL system tables
         cursor.execute("""
             SELECT table_schema, table_name
@@ -398,7 +399,7 @@ def execute_sql_query_pg(pg_conn, sql_query: str) -> Tuple[Optional[pd.DataFrame
     logger.info(f"Executing SQL with psycopg2 cursor: {sql_query}")
     cursor = None
     try:
-        cursor = pg_conn.cursor()
+        cursor = pg_conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
         cursor.execute(sql_query)
         
         if cursor.description is None:

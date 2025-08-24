@@ -1,0 +1,78 @@
+# Core FastAPI and web framework
+fastapi==0.104.1
+uvicorn[standard]==0.24.0
+python-multipart==0.0.6
+starlette==0.27.0
+
+# Database and ORM
+sqlalchemy==2.0.23
+alembic==1.13.1
+psycopg2-binary==2.9.9
+mysql-connector-python==8.2.0
+sqlite3
+
+# Data processing and analytics
+pandas==2.1.4
+numpy==1.25.2
+polars==0.20.2
+pyarrow==14.0.2
+chardet==5.2.0
+openpyxl==3.1.2
+
+# Machine Learning and Statistics
+scikit-learn==1.3.2
+scipy==1.11.4
+statsmodels==0.14.0
+
+# Data validation and settings
+pydantic==2.5.2
+pydantic-settings==2.1.0
+
+# LLM and AI
+langchain==0.1.0
+langchain-core==0.1.8
+langgraph==0.2.50
+openai==1.6.1
+anthropic==0.8.1
+google-generativeai==0.3.2
+
+# Vector database
+chromadb==0.4.18
+
+# External APIs and web scraping
+requests==2.31.0
+httpx==0.25.2
+beautifulsoup4==4.12.2
+
+# Data visualization
+plotly==5.17.0
+matplotlib==3.8.2
+seaborn==0.13.0
+
+# Utilities
+python-dotenv==1.0.0
+loguru==0.7.2
+typer==0.9.0
+rich==13.7.0
+
+# Development and testing
+pytest==7.4.3
+pytest-asyncio==0.21.1
+black==23.12.0
+isort==5.13.2
+flake8==6.1.0
+
+# Security
+python-jose[cryptography]==3.3.0
+passlib[bcrypt]==1.7.4
+
+# Caching
+redis==5.0.1
+hiredis==2.2.3
+
+# Background tasks
+celery==5.3.4
+
+# File handling
+python-magic==0.4.27
+aiofiles==23.2.1

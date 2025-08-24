@@ -668,3 +668,13 @@ class PostgreSQLService(BaseDatabaseService):
             "recursive_queries": True,
             "upsert": True  # INSERT ... ON CONFLICT
         }
+    
+    def _get_database_version(self, connection: Any) -> Optional[str]:
+        """Get PostgreSQL version information."""
+        try:
+            with connection.cursor() as cursor:
+                cursor.execute("SELECT version()")
+                result = cursor.fetchone()
+                return result[0] if result else None
+        except Exception:
+            return None

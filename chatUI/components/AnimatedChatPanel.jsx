@@ -521,12 +521,65 @@ export default function AnimatedChatPanel({
   }
 
   const handleDatabaseTypeChange = (newDbType) => {
-    // Update the database connection info with new type
+    // Define default configurations for each database type
+    const dbDefaults = {
+      postgresql: {
+        db_type: 'postgresql',
+        db_host: 'localhost',
+        db_port: 5432,
+        db_user: 'postgres',
+        db_name: 'chinook',
+        db_password: '',
+        db_schema: null
+      },
+      mysql: {
+        db_type: 'mysql',
+        db_host: 'localhost',
+        db_port: 3306,
+        db_user: 'root',
+        db_name: 'chinook',
+        db_password: '',
+        db_schema: null
+      },
+      sqlite: {
+        db_type: 'sqlite',
+        db_host: '',
+        db_port: null,
+        db_user: '',
+        db_name: 'chinook.db',
+        db_password: '',
+        db_schema: null
+      },
+      snowflake: {
+        db_type: 'snowflake',
+        db_host: 'your-account.snowflakecomputing.com',
+        db_port: 443,
+        db_user: '',
+        db_name: 'CHINOOK',
+        db_password: '',
+        db_schema: 'PUBLIC'
+      }
+    }
+
+    // Get default config for the new database type
+    const defaultConfig = dbDefaults[newDbType] || dbDefaults.postgresql
+    
+    // Update the database connection info with new type and defaults
     const updatedConnection = {
       ...dbConnection,
-      db_type: newDbType
+      ...defaultConfig
     }
+    
     onDbConnectionChange(updatedConnection)
+    
+    // Also update the global config if available
+    if (onConfigChange && config) {
+      const updatedConfig = {
+        ...config,
+        db_connection_info: updatedConnection
+      }
+      onConfigChange(updatedConfig)
+    }
   }
 
   // Initialize animations

@@ -6,7 +6,7 @@ python-dotenv
 
 # Database
 psycopg2-binary
-mysql-connector-python
+asyncpg
 
 # Vector Store
 chromadb
@@ -19,6 +19,7 @@ langchain
 langchain-core
 langchain-google-genai
 langchain-community
+langgraph
 
 # HTML Processing (for potential text extraction)
 lxml

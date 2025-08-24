@@ -6,7 +6,7 @@ import { TextPlugin } from 'gsap/TextPlugin'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Paperclip, Send, Zap, Database } from 'lucide-react'
-import DBConnectionModal from '@/components/DBConnectionModal'
+import DatabaseConnectionManager from '@/components/DatabaseConnectionManager'
 
 // Register GSAP plugins
 if (typeof window !== 'undefined') {
@@ -368,11 +368,12 @@ export default function AnimatedChatInput({
         )}
       </div>
 
-      <DBConnectionModal
+      <DatabaseConnectionManager
         isOpen={showDBModal}
         onClose={() => setShowDBModal(false)}
-        onSave={onDbConnectionChange}
-        currentConnection={dbConnection}
+        onConnectionSaved={onDbConnectionChange}
+        currentDbType={dbConnection?.type || 'postgresql'}
+        savedConnections={[]} // Will be loaded from API
       />
     </div>
   )

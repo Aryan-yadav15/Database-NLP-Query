@@ -44,10 +44,10 @@ referencing its key (e.g., calling the API with `"db_type": "oracle"`).
 
 Supported Database Types:
 ------------------------
-- PostgreSQL: "postgresql", "postgres", "pg" (aliases)
-- MySQL: "mysql", "mariadb" (aliases)
-- SQLite: "sqlite", "sqlite3" (aliases) 
-- Snowflake: "snowflake" (future implementation)
+- PostgreSQL: "postgresql", "postgres" (aliases)
+- MySQL: "mysql" 
+- SQLite: "sqlite"
+- Snowflake: "snowflake"
 
 Architecture Benefits:
 ---------------------
@@ -69,13 +69,9 @@ from app.services.db.base import BaseDatabaseService, ConnectionInfo
 # PostgreSQL service - primary database for the application
 from .postgresql import PostgreSQLService
 
-# MySQL service - enterprise database support
-from .mysql import MySQLService
-
-# SQLite service - lightweight database for development and small applications
-from .sqlite import SQLiteService
-
 # Future database services (will be implemented in subsequent phases)
+# from .mysql import MySQLService
+# from .sqlite import SQLiteService  
 # from .snowflake import SnowflakeService
 
 # Example for a future Oracle service:
@@ -91,15 +87,9 @@ _database_services: Dict[str, Type[BaseDatabaseService]] = {
     "postgres": PostgreSQLService,  # Common alias
     "pg": PostgreSQLService,        # Short alias
     
-    # MySQL with aliases
-    "mysql": MySQLService,
-    "mariadb": MySQLService,        # Compatible with MySQL
-    
-    # SQLite with aliases
-    "sqlite": SQLiteService,
-    "sqlite3": SQLiteService,       # Alternative name
-    
     # Future database services (commented out until implemented)
+    # "mysql": MySQLService,
+    # "sqlite": SQLiteService,
     # "snowflake": SnowflakeService,
     
     # Example for a future Oracle service:

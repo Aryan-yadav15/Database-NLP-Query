@@ -31,6 +31,8 @@ from fastapi.middleware.cors import CORSMiddleware
 # Application-specific imports - API routers
 from app.api.v1.endpoints.query_new import router as query_router  # Streaming query processor
 from app.api.v1.endpoints.generate import router as generate_router  # Text generation endpoint
+from app.api.v1.endpoints.database_connections import router as db_connections_router  # Database connection management
+from app.api.v1.endpoints.analytics import dashboards_router, cards_router  # Analytics dashboard endpoints
 
 # Logging and configuration
 import logging
@@ -140,6 +142,7 @@ Register API routers with specific prefixes and tags for organization.
 Router Architecture:
 - /api/v1/query: Core query processing with streaming support
 - /api/v1/generate: Simple text generation for summarization tasks
+- /api/v1/database: Database connection management
 
 Each router is versioned (v1) to support future API evolution without
 breaking existing clients.
@@ -153,6 +156,21 @@ app.include_router(
     generate_router, 
     prefix="/api/v1/generate",
     tags=["generation"]
+)
+app.include_router(
+    db_connections_router,
+    prefix="/api/v1",
+    tags=["database"]
+)
+app.include_router(
+    dashboards_router,
+    prefix="/api/v1/analytics",
+    tags=["analytics"]
+)
+app.include_router(
+    cards_router,
+    prefix="/api/v1/analytics",
+    tags=["analytics"]
 )
 
 # =============================================================================
