@@ -16,13 +16,13 @@ export async function POST(request) {
       ],
       model_name: body.model_name || "gemini-2.0-flash",
       temperature: body.temperature || 0.2,
-      api_key: body.api_key || process.env.GEMINI_API_KEY || "AIzaSyBja5P8lEZQ6qYs1SM2ZRXwzm9EgCsERLc",
+      api_key: body.api_key || process.env.GEMINI_API_KEY,
       db_connection_info: body.db_connection_info || body.db_connection || {
         db_host: process.env.DEFAULT_DB_HOST || "localhost",
         db_port: parseInt(process.env.DEFAULT_DB_PORT) || 5432,
         db_user: process.env.DEFAULT_DB_USER || "postgres",
         db_name: process.env.DEFAULT_DB_NAME || "chinook",
-        db_password: process.env.DEFAULT_DB_PASSWORD || "iamaryan15",
+        db_password: process.env.DEFAULT_DB_PASSWORD || "",
         db_schema: null
       }
     }

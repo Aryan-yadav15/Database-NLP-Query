@@ -14,10 +14,10 @@ chromadb
 sentence-transformers
 torch
 google-generativeai
-langchain
-langchain-core
-langchain-google-genai
-langchain-community
+langchain>=0.3,<0.4  # 1.x removed AgentExecutor
+langchain-core>=0.3,<0.4
+langchain-google-genai>=2,<3
+langchain-community>=0.3,<0.4
 
 # HTML Processing (for potential text extraction)
 lxml

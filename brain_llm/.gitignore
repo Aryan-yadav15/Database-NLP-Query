@@ -42,3 +42,8 @@ chromadb/
 
 # Local development
 .DS_Store
+# Local artifacts
+.venv/
+logs/
+node_modules/
+.next/

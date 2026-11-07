@@ -94,7 +94,7 @@ export default function ChatPanel({
         short_term_memory: [],
         model_name: "gemini-2.0-flash-lite",
         temperature: 0.2,
-        api_key: "AIzaSyA4IHwHEifp7wcCFhGmLITY2rvelvWH-qY",
+        api_key: "",
         db_connection_info: dbConnection
       }
 

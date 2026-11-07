@@ -61,7 +61,7 @@ class Settings(BaseSettings):
     PG_PORT: int = 5432                          # PostgreSQL default port - standard TCP port
     PG_DATABASE_AW: str = "Adventureworks"       # AdventureWorks database name - Microsoft sample DB
     PG_USER: str = "postgres"                    # Database username - superuser for development
-    PG_PASSWORD: str = "aryanyadav@deloitte"     # Database password - MUST be env var in production
+    PG_PASSWORD: str = "postgres"               # Database password - override via API2_PG_PASSWORD
     
     # =============================================================================
     # EMBEDDING MODEL CONFIGURATION
