@@ -19,58 +19,10 @@
 <!-- DEMO_GIF -->
 <p align="center"><sub><i>Demo recording coming soon.</i></sub></p>
 
-## ▸ What you can ask
-
-<table>
-<tr>
-<td width="50%" valign="top">
-
-<sub>01 · DATA</sub>
-### Ask a question about your data
-*"Top 5 customers by total invoice amount"*
-
-The agent writes PostgreSQL for your schema, runs it, and returns a plain-English answer, the result table, and the SQL itself so you can check it.
-
-<sub>`get_database_answer`</sub>
-
-</td>
-<td width="50%" valign="top">
-
-<sub>02 · SCHEMA</sub>
-### See how the tables connect
-*"Show me how the tables are related"*
-
-It reads the foreign keys and draws an interactive graph of the most connected tables. You can drag it and switch layouts.
-
-<sub>`visualize_database_schema` · vis-network</sub>
-
-</td>
-</tr>
-<tr>
-<td width="50%" valign="top">
-
-<sub>03 · DATA QUALITY</sub>
-### Find the right data-quality checks
-*"What checks apply to customer master data?"*
-
-It runs a semantic search over a ~570-rule SAP data-quality rulebook and writes a validation query for each match.
-
-<sub>`get_data_quality_info` · ChromaDB</sub>
-
-</td>
-<td width="50%" valign="top">
-
-<sub>04 · CONVERSATION</sub>
-### Keep the context
-*"What did I just ask you?"*
-
-It answers follow-ups and small talk from the chat history, without querying the database.
-
-<sub>`answer_from_history`</sub>
-
-</td>
-</tr>
-</table>
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/capabilities-dark.svg"/>
+  <img src="docs/assets/capabilities-light.svg" width="100%" alt="Four things you can ask: data questions (get_database_answer), schema graphs (visualize_database_schema), data-quality rules (get_data_quality_info), and follow-ups (answer_from_history)"/>
+</picture>
 
 Each step streams live to the UI (*Generating SQL… → Executing query… → Interpreting results…*), and a sidebar adds up the tokens every request used. You can point it at **any Postgres database** from the settings panel.
 
@@ -86,15 +38,15 @@ Each step streams live to the UI (*Generating SQL… → Executing query… → 
   <img src="docs/assets/flow-light.svg" width="100%" alt="Five steps: route, read schema, write SQL, execute, explain"/>
 </picture>
 
-### Decisions worth talking about
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/decisions-dark.svg"/>
+  <img src="docs/assets/decisions-light.svg" width="100%" alt="Five design decisions: SSE over WebSockets, one tool per request (max_iterations=1), schema read at runtime, pluggable LLM layer, per-request token accounting"/>
+</picture>
 
-| | Decision | Why |
-|---|---|---|
-| **01** | **Server-Sent Events, not WebSockets** | Data only flows server → client during a request. SSE is plain HTTP, so it passes cleanly through the Next.js route handler. |
-| **02** | **The agent stops after one tool** | A custom `StopAfterToolOutputParser` ends the ReAct loop as soon as a tool has sent its result. This stops the model from looping or rewriting a correct answer, and it saves tokens. |
-| **03** | **Schema read at runtime, not hardcoded** | The backend introspects whatever database you connect, so it isn't tied to one demo database. You can also send a schema with the request to skip introspection on large databases. |
-| **04** | **Pluggable LLM layer** | `BaseLLMService` plus a factory picks the provider from the model-name prefix. An API key sent with a request overrides the server's key for that request only. |
-| **05** | **Token accounting per request** | A request-scoped tracker adds up usage across every LLM call (routing, SQL, summary) and reports one total. |
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/editor-dark.svg"/>
+  <img src="docs/assets/editor-light.svg" width="100%" alt="Code from langchain_service.py: format_sse builds each Server-Sent Event; AgentExecutor runs with max_iterations=1"/>
+</picture>
 
 <details>
 <summary><b>Request sequence (detailed)</b></summary>
@@ -125,20 +77,22 @@ sequenceDiagram
 
 ## ▸ Built with
 
-<table>
-<tr>
-<td valign="top"><sub>FRONTEND</sub><br/><b>Next.js 14</b> · React 18 · Tailwind · Radix UI · GSAP · vis-network</td>
-<td valign="top"><sub>BACKEND</sub><br/><b>FastAPI</b> · LangChain (ReAct) · Pydantic Settings</td>
-</tr>
-<tr>
-<td valign="top"><sub>MODELS</sub><br/><b>Google Gemini</b> · sentence-transformers <code>all-MiniLM-L6-v2</code></td>
-<td valign="top"><sub>DATA</sub><br/><b>PostgreSQL</b> · psycopg2 · SQLAlchemy · pandas · ChromaDB</td>
-</tr>
-</table>
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/stack-dark.svg"/>
+  <img src="docs/assets/stack-light.svg" width="100%" alt="Built with: Next.js 14, React 18, Tailwind, vis-network; FastAPI, LangChain, Python, Pydantic; Google Gemini, MiniLM embeddings; PostgreSQL, SQLAlchemy, ChromaDB, pandas"/>
+</picture>
 
 ## ▸ Run it
 
 You need Python 3.11–3.13 (torch has no wheels for newer versions yet), Node 18+, a PostgreSQL database, and a [Gemini API key](https://aistudio.google.com/apikey). Any Postgres database works. The [Chinook sample](https://github.com/lerocha/chinook-database) (a music store) is a good one to try.
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/terminal-dark.svg"/>
+  <img src="docs/assets/terminal-light.svg" width="100%" alt="Terminal: start the FastAPI backend on port 8000 and the Next.js frontend on port 3000"/>
+</picture>
+
+<details>
+<summary><b>Copy the commands</b></summary>
 
 ```bash
 # 1 · backend  → http://localhost:8000
@@ -154,6 +108,8 @@ npm install
 cp .env.example .env.local      # same key + DB details
 npm run dev
 ```
+
+</details>
 
 You can also set the API key and database connection at runtime in the **Configuration** sidebar.
 
