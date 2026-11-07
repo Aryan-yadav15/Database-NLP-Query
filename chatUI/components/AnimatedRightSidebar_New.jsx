@@ -43,7 +43,7 @@ export default function AnimatedRightSidebar({
   const [localConfig, setLocalConfig] = useState({
     user_id: "b521b8a1-0b9d-45e6-991d-1476c5f6fee8",
     api_key: "",
-    model_name: "gemini-2.0-flash",
+    model_name: "gemini-2.5-flash",
     temperature: 0.2,
     db_connection_info: {
       db_host: "localhost",
@@ -299,7 +299,7 @@ export default function AnimatedRightSidebar({
                     value={localConfig.model_name}
                     onChange={(e) => handleConfigChange('model_name', e.target.value)}
                     className="mt-1 bg-gray-700 border-gray-600 text-white text-xs"
-                    placeholder="gemini-2.0-flash"
+                    placeholder="gemini-2.5-flash"
                   />
                 </div>
 

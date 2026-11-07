@@ -57,7 +57,7 @@ export default function AnimatedChatPanel({
   const [chatConfig, setChatConfig] = useState({
     user_id: "b521b8a1-0b9d-45e6-991d-1476c5f6fee8",
     api_key: "",
-    model_name: "gemini-2.0-flash",
+    model_name: "gemini-2.5-flash",
     temperature: 0.2,
     db_connection_info: {
       db_host: "localhost",

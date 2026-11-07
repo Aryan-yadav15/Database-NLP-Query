@@ -92,7 +92,7 @@ export default function ChatPanel({
           content: msg.content
         })),
         short_term_memory: [],
-        model_name: "gemini-2.0-flash-lite",
+        model_name: "gemini-2.5-flash",
         temperature: 0.2,
         api_key: "",
         db_connection_info: dbConnection

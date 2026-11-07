@@ -16,8 +16,10 @@
 
 ## ▸ See it work
 
-<!-- DEMO_GIF -->
-<p align="center"><sub><i>Demo recording coming soon.</i></sub></p>
+<p align="center">
+  <img src="docs/demo.gif" width="760" alt="Demo: asking for the top 5 customers by spend returns generated SQL, a result table and a summary; asking how tables relate draws an interactive schema graph"/>
+</p>
+<p align="center"><sub>Real run against the Chinook sample database · waits for the model are sped up</sub></p>
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="docs/assets/capabilities-dark.svg"/>

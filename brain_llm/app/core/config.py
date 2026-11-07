@@ -111,8 +111,8 @@ class Settings(BaseSettings):
     Safety Settings: Configured for business environments with minimal restrictions
     """
     GEMINI_API_KEY: str                                   # Required: Google AI API key - obtain from Google AI Studio
-    GEMINI_RAG_MODEL_NAME: str = "gemini-1.5-flash"      # Fast model for RAG tasks - balanced speed/quality
-    GEMINI_SQL_MODEL_NAME: str = "gemini-1.5-flash"      # Fast model for SQL generation - specialized for code
+    GEMINI_RAG_MODEL_NAME: str = "gemini-2.5-flash"      # Fast model for RAG tasks - balanced speed/quality
+    GEMINI_SQL_MODEL_NAME: str = "gemini-2.5-flash"      # Fast model for SQL generation - specialized for code
     
     # Safety settings for business use - minimal restrictions for professional content
     GEMINI_SAFETY_SETTINGS: dict = {

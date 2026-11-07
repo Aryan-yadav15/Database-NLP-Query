@@ -14,7 +14,7 @@ export async function POST(request) {
       short_term_memory: body.short_term_memory || [
         "SUMMARY: The table names are case sensitive, use double quotes while generating commands"
       ],
-      model_name: body.model_name || "gemini-2.0-flash",
+      model_name: body.model_name || "gemini-2.5-flash",
       temperature: body.temperature || 0.2,
       api_key: body.api_key || process.env.GEMINI_API_KEY,
       db_connection_info: body.db_connection_info || body.db_connection || {

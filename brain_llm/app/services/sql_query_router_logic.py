@@ -31,6 +31,7 @@ Author: Brain LLM Team
 import asyncio
 import pandas as pd
 import psycopg2
+import psycopg2.extras
 import logging
 import json
 import re
@@ -102,7 +103,7 @@ def get_detailed_database_schema_string(conn) -> str:
     schema_string_parts = ["Database Schema Description:"]
     cursor = None
     try:
-        cursor = conn.cursor()
+        cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
         # Get all tables from user-defined schemas - excludes PostgreSQL system tables
         cursor.execute("""
             SELECT table_schema, table_name
