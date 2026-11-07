@@ -61,7 +61,7 @@ class Settings(BaseSettings):
     PG_PORT: int = 5432                          # PostgreSQL default port - standard TCP port
     PG_DATABASE_AW: str = "Adventureworks"       # AdventureWorks database name - Microsoft sample DB
     PG_USER: str = "postgres"                    # Database username - superuser for development
-    PG_PASSWORD: str = "aryanyadav@deloitte"     # Database password - MUST be env var in production
+    PG_PASSWORD: str = "postgres"               # Database password - override via API2_PG_PASSWORD
     
     # =============================================================================
     # EMBEDDING MODEL CONFIGURATION
@@ -111,8 +111,8 @@ class Settings(BaseSettings):
     Safety Settings: Configured for business environments with minimal restrictions
     """
     GEMINI_API_KEY: str                                   # Required: Google AI API key - obtain from Google AI Studio
-    GEMINI_RAG_MODEL_NAME: str = "gemini-1.5-flash"      # Fast model for RAG tasks - balanced speed/quality
-    GEMINI_SQL_MODEL_NAME: str = "gemini-1.5-flash"      # Fast model for SQL generation - specialized for code
+    GEMINI_RAG_MODEL_NAME: str = "gemini-2.5-flash"      # Fast model for RAG tasks - balanced speed/quality
+    GEMINI_SQL_MODEL_NAME: str = "gemini-2.5-flash"      # Fast model for SQL generation - specialized for code
     
     # Safety settings for business use - minimal restrictions for professional content
     GEMINI_SAFETY_SETTINGS: dict = {

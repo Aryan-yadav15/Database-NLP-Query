@@ -43,7 +43,7 @@ The frontend sends the following payload structure:
     "db_port": 5432,
     "db_user": "postgres",
     "db_name": "chinook",
-    "db_password": "iamaryan15", 
+    "db_password": "postgres", 
     "db_schema": null
   }
 }
@@ -82,7 +82,7 @@ DEFAULT_DB_HOST=localhost
 DEFAULT_DB_PORT=5432
 DEFAULT_DB_USER=postgres
 DEFAULT_DB_NAME=chinook
-DEFAULT_DB_PASSWORD=iamaryan15
+DEFAULT_DB_PASSWORD=postgres
 DEFAULT_USER_ID=b521b8a1-0b9d-45e6-991d-1476c5f6fee8
 ```
 

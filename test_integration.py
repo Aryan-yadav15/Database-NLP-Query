@@ -33,7 +33,7 @@ def test_backend_direct():
             "db_port": 5432,
             "db_user": "postgres",
             "db_name": "chinook",
-            "db_password": "iamaryan15",
+            "db_password": "postgres",
             "db_schema": None
         }
     }
@@ -88,7 +88,7 @@ def test_frontend_api():
             "db_port": 5432,
             "db_user": "postgres",
             "db_name": "chinook",
-            "db_password": "iamaryan15",
+            "db_password": "postgres",
             "db_schema": None
         }
     }

@@ -56,15 +56,15 @@ export default function AnimatedChatPanel({
   const [processingSteps, setProcessingSteps] = useState([])
   const [chatConfig, setChatConfig] = useState({
     user_id: "b521b8a1-0b9d-45e6-991d-1476c5f6fee8",
-    api_key: "AIzaSyBja5P8lEZQ6qYs1SM2ZRXwzm9EgCsERLc",
-    model_name: "gemini-2.0-flash",
+    api_key: "",
+    model_name: "gemini-2.5-flash",
     temperature: 0.2,
     db_connection_info: {
       db_host: "localhost",
       db_port: 5432,
       db_user: "postgres",
       db_name: "chinook",
-      db_password: "iamaryan15",
+      db_password: "",
       db_schema: null
     },
     short_term_memory: [
