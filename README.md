@@ -93,25 +93,24 @@ You need Python 3.11–3.13 (torch has no wheels for newer versions yet), Node 1
   <img src="docs/assets/terminal-light.svg" width="100%" alt="Terminal: start the FastAPI backend on port 8000 and the Next.js frontend on port 3000"/>
 </picture>
 
-<details>
-<summary><b>Copy the commands</b></summary>
+**Terminal 1 · backend** → http://localhost:8000
 
 ```bash
-# 1 · backend  → http://localhost:8000
 cd brain_llm
 python -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
-cp .env.example .env            # Gemini key + DB details
+cp .env.example .env            # add your Gemini key + DB details
 uvicorn app.main:app --reload --port 8000
+```
 
-# 2 · frontend → http://localhost:3000
+**Terminal 2 · frontend** → http://localhost:3000
+
+```bash
 cd chatUI
 npm install
 cp .env.example .env.local      # same key + DB details
 npm run dev
 ```
-
-</details>
 
 You can also set the API key and database connection at runtime in the **Configuration** sidebar.
 
